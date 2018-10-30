@@ -6,4 +6,4 @@ all: nrutil.o
 	gcc testOpen.c nrutil.o -o testOpen
 
 nrutil.o:
-	gcc -c nrutil.c -o nrutil.o
+	gcc -c ./include/nrutil.c -o nrutil.o

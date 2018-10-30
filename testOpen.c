@@ -1,5 +1,5 @@
-#include "nrdef.h"
-#include "nrutil.h"
+#include "include/nrdef.h"
+#include "include/nrutil.h"
 
 
 int main(void) {

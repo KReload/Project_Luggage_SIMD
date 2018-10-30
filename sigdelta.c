@@ -1,6 +1,6 @@
-#include "nrdef.h"
+#include "include/nrdef.h"
 #include "sigdelta.h"
-#include "nrutil.h"
+#include "include/nrutil.h"
 #include <math.h>
 
 
