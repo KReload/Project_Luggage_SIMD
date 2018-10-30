@@ -39,7 +39,7 @@ void sigmaDelta(char* filename1, char* filename2)
 	  else if(M0[i][j] > I1[i][j])
 	    M1[i][j] = M0[i][j] - 1;
 	  else
-	    M1[i][j] = M0[i][j];
+	  ;
 	}
     }
   
