@@ -7,3 +7,8 @@ all: nrutil.o
 
 nrutil.o:
 	gcc -c ./include/nrutil.c -o ./exe/nrutil.o
+clean:
+	rm sigdelta testOpen ./benchmark/bench ./exe/*
+.PHONY: bench
+bench:
+	gcc ./benchmark/bench.c -o ./benchmark/bench
