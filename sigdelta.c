@@ -48,7 +48,7 @@ void sigmaDelta(char* filename0, char* filename1)
 	    M1[i][j] = V0[i][j] - 1;
 	  else
 	    V1[i][j] = V0[i][j];
-	  V1[i][j] = max(min(V1[i][j],VMAX),VMIN); //Clamp
+	  V1[i][j] = MAX(MIN(V1[i][j],VMAX),VMIN); //Clamp
 	}
     }
 
@@ -60,7 +60,7 @@ void sigmaDelta(char* filename0, char* filename1)
 	  if(O1[i][j] < V1[i][j])
 	    E1[i][j] = 0;
 	  else
-	    E1[i][j] = 1;
+	    E1[i][j] = 1; //ou 255
 	}
 
     }

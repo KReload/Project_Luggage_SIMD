@@ -12,17 +12,14 @@ all: nrutil.o morpho.o
 
 nrutil.o:
 	gcc -c ./include/nrutil.c -o ./exe/nrutil.o
-<<<<<<< Updated upstream
-clean:
-	rm sigdelta testOpen ./benchmark/bench ./exe/*
-.PHONY: bench
-bench:
-	gcc ./benchmark/bench.c -o ./benchmark/bench
-=======
 
 morpho.o:
 	gcc -c ./include/morpho.c ./exe/nrutil.o -o ./exe/morpho.o
 
 clean:
 	rm -rf ./exe/*.o $(EXEC)
->>>>>>> Stashed changes
+
+.PHONY: bench
+bench:
+	gcc ./benchmark/bench.c -o ./benchmark/bench
+
