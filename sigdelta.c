@@ -1,14 +1,14 @@
 #include "include/nrdef.h"
 #include "sigdelta.h"
 #include "include/nrutil.h"
-#include <math.h>
+#include <stdlib.h>
 
 
-void sigmaDelta(char* filename1, char* filename2)
+void sigmaDelta(char* filename0, char* filename1)
 {
   long nrl,nrh,ncl,nch;
-  uint8** I0 = LoadPGM_ui8matrix(filename1,&nrl,&nrh,&ncl,&nch);
-  uint8** I1 = LoadPGM_ui8matrix(filename2,&nrl,&nrh,&ncl,&nch);
+  uint8** I0 = LoadPGM_ui8matrix(filename0,&nrl,&nrh,&ncl,&nch);
+  uint8** I1 = LoadPGM_ui8matrix(filename1,&nrl,&nrh,&ncl,&nch);
   uint8** M0 = I0;
   uint8** M1 = ui8matrix(nrl,nrh,ncl,nch);
   uint8** V0 = ui8matrix(nrl,nrh,ncl,nch);
