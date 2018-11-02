@@ -20,8 +20,8 @@ void detectionMouvement()
 
   for(int i = 0; i < NIMAGES - 1; i++)
     {
-      sprintf(filename0,"./hall/pgm.hall%06d",i);
-      sprintf(filename1,"./hall/pgm.hall%06d",i+1);
+      sprintf(filename0,"./hall/hall%06d.pgm",i);
+      sprintf(filename1,"./hall/hall%06d.pgm",i+1);
       I0 = LoadPGM_ui8matrix(filename0, &nrl, &nrh, &ncl, &nch);
       I1 = LoadPGM_ui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
       O = ui8matrix(nrl, nrh, ncl, nch);

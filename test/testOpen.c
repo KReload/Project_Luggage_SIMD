@@ -14,6 +14,7 @@ int main(void) {
   }
 
   SavePGM_ui8matrix(img, nrl, nrh, ncl, nch, "hall0Inv.pgm");
+  free_ui8matrix(img, nrl, nrh, ncl, nch);
 
   return 0;
 }

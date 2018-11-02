@@ -31,7 +31,7 @@ void sigmaDelta(uint8** I0, uint8** I1, uint8** M0, uint8** M1, uint8** V0, uint
 	  if(V0[i][j] < N*O1[i][j])
 	    V1[i][j] = V0[i][j] + 1;
 	  else if(V0[i][j] > N*O1[i][j])
-	    M1[i][j] = V0[i][j] - 1;
+	    V1[i][j] = V0[i][j] - 1;
 	  else
 	    V1[i][j] = V0[i][j];
 	  V1[i][j] = MAX(MIN(V1[i][j],VMAX),VMIN); //Clamp
@@ -46,7 +46,7 @@ void sigmaDelta(uint8** I0, uint8** I1, uint8** M0, uint8** M1, uint8** V0, uint
 	  if(O1[i][j] < V1[i][j])
 	    E1[i][j] = 0;
 	  else
-	    E1[i][j] = 1; //ou 255
+	    E1[i][j] = 255; 
 	}
 
     }

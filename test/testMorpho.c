@@ -17,6 +17,7 @@ int main(void) {
   SavePGM_ui8matrix(imgDilatation, nrl, nrh, ncl, nch, "hall0Dilatation.pgm");
   SavePGM_ui8matrix(imgOuverture, nrl, nrh, ncl, nch, "hall0Ouverture.pgm");
   SavePGM_ui8matrix(imgFermeture, nrl, nrh, ncl, nch, "hall0Fermeture.pgm");
-  
+
+  free_ui8matrix(img, nrl, nrh, ncl, nch);
   return 0;
 }
