@@ -14,8 +14,6 @@
 #include <emmintrin.h>
 #include <mmintrin.h>
 
-#include "def.h"
-#include "vdef.h"
 #include "vnrutil.h"
 
 #define LINEAR_ALLOCATION
@@ -68,7 +66,7 @@ void s2v(int si0, int si1, int sj0, int sj1, int c, int *vi0, int *vi1, int *vj0
 void v2m(int vi0, int vi1, int vj0, int vj1, int c, int *mi0, int *mi1, int *mj0, int *mj1)
 /* ------------------------------------------------------------------------------------- */
 {
-    // conversion indices vectoriels en indices scalaires pour malloc alignŽs
+    // conversion indices vectoriels en indices scalaires pour malloc alignï¿½s
     *mi0 = vi0;
     *mi1 = vi1;
     

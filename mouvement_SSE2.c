@@ -1,12 +1,20 @@
 #include <stdlib.h>
-#include "include/nrdef.h"
-#include "include/nrutil.h"
-#include <emmintrin.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <stddef.h>
+#include <ctype.h> 
+#include <math.h> /* fabs */
+
+
 #include "include/vnrutil.h"
+#include "include/simdutil.h"
 
 #define THETA 10
 
 
+
+/*
 vuint8** load_uint8_to_vui8matrix(uint8**a, long nrl, long nrh, long ncl, long nch) {
 
   //Convertion de uint8 matrix à vuint8 matrix (qui est une _m128i matrice)
@@ -21,7 +29,8 @@ vuint8** load_uint8_to_vui8matrix(uint8**a, long nrl, long nrh, long ncl, long n
 
   return res;
 }
-
+*/
+/*
 void frameDifference(char* filename0, char* filename1)
 {
   long nrl, nrh, ncl, nch;
@@ -47,8 +56,13 @@ void frameDifference(char* filename0, char* filename1)
       }
     }
 }
+*/
+
 
 int main(void)
 {
-  return 0;
+  long nrl, nrh, ncl,nch;
+  vuint8**img = LoadPGM_vui8matrix("./hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
+  SavePGM_vui8matrix(img, nrl, nrh, ncl, nch, "hall0SIMDtest.pgm");
 }
+

@@ -6,6 +6,7 @@
  *Copyright(c) 2007 Lionel Lacassagne, all rights reserved
  */
 
+
 #ifndef __NRUTIL_H__
 #define __NRUTIL_H__
 
@@ -16,6 +17,7 @@
 extern "C" {
 #endif
 
+#include <stdio.h>
 
 #define NR_END 0
 #define FREE_ARG char*
@@ -44,6 +46,8 @@ void generate_path_filename_k_ndigit_l_extension(char *path, char *filename, int
 sint32* si32vector(long nl, long nh);
 float32* f32vector(long nl, long nh);
 float64* f64vector(long nl, long nh);
+
+char *readitem   (FILE *file, char *buffer);
 
 void free_si32vector(sint32 *v, long nl, long nh);
 void free_f32vector(float32 *v, long nl, long nh);

@@ -6,7 +6,6 @@
  * Copyright (c) 2000 - 2017, Lionel Lacassagne
  */
 
-#include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <ctype.h> 
