@@ -26,8 +26,7 @@ vuint8** frameDifference(char* filename0, char* filename1, long* nrl,long* nrh,l
   vuint8 theta = init_vuint8((uint8)THETA);
   vuint8 low = init_vuint8((uint8)0);
   vuint8 high = init_vuint8((uint8)255);
-  vuint8 C,ab,ba;
-  vuint8 D;
+  vuint8 c,d,ab,ba;
   
   for(int i = 0; i < *nrh; i++)
     {
@@ -37,11 +36,11 @@ vuint8** frameDifference(char* filename0, char* filename1, long* nrl,long* nrh,l
         ba = _mm_subs_epu8((__m128i)I0[i][j],(__m128i)I1[i][j]);
         O[i][j] = _mm_or_si128(ab,ba);
         
-        C = (vuint8)_mm_cmplt_epi8((__m128i)theta,(__m128i)O[i][j]);
+        c = (vuint8)_mm_cmplt_epi8((__m128i)theta,(__m128i)O[i][j]);
 
-        D = _mm_or_si128(_mm_and_si128((__m128i)C,(__m128i)high),_mm_andnot_si128((__m128i)C,(__m128i)low));
+        d = _mm_or_si128(_mm_and_si128((__m128i)c,(__m128i)high),_mm_andnot_si128((__m128i)c,(__m128i)low));
 
-        _mm_store_si128((__m128i*)&E[i][j],D);
+        _mm_store_si128((__m128i*)&E[i][j],d);
 
       }
     }
