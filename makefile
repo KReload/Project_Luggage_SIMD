@@ -5,7 +5,7 @@ EXEC = ./test/testsd ./test/testMorpho ./test/testOpen ./test/testfd ./exe/*
 OBJ = ./obj/nrutil.o ./obj/morpho.o ./obj/sigdelta.o ./obj/framediff.o
 OTHER = ./test/*.c~ ./test/*.pgm ./include/*.c~ ./include/*.h~ *.c~
 
-all: nrutil.o morpho.o framediff.o sigdelta.o simdutil.o
+all: nrutil.o vnrutil.o morpho.o framediff.o sigdelta.o simdutil.o
 	gcc mouvement_FD.c ./obj/nrutil.o ./obj/morpho.o ./obj/framediff.o -o ./exe/mouvement_FD
 	gcc mouvement_SSE2.c ./obj/simdutil.o ./obj/vnrutil.o ./obj/nrutil.o -o ./exe/mouvement_SSE2
 
@@ -32,6 +32,7 @@ sigdelta.o:
 
 simdutil.o:
 	gcc -c ./include/simdutil.c -o ./obj/simdutil.o
+
 clean:
 	rm -rf $(OBJ) $(EXEC) $(OTHER)
 
