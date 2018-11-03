@@ -12,13 +12,9 @@
 
 #define THETA 10
 
-
-
-
-vuint8** frameDifference(char* filename0, char* filename1, long* nrl,long* nrh,long* ncl, long* nch)
+vuint8** frameDifference(vuint8** I0, vuint8** I1, long* nrl,long* nrh,long* ncl, long* nch)
 {
-  vuint8** I0 = LoadPGM_vui8matrix(filename0, nrl, nrh, ncl, nch);
-  vuint8** I1 = LoadPGM_vui8matrix(filename1, nrl, nrh, ncl, nch);
+  
   vuint8** O = vui8matrix(*nrl, *nrh, *ncl, *nch);
   vuint8** E = vui8matrix(*nrl, *nrh, *ncl, *nch);
 
@@ -55,8 +51,10 @@ int main(void)
   long nrl, nrh, ncl,nch;
   //vuint8**img = LoadPGM_vui8matrix("./hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
   //vuint8**img2 = LoadPGM_vui8matrix("./hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
+  vuint8** I0 = LoadPGM_vui8matrix("./hall/hall000000.pgm", &nrl, &nrh, &ncl, &nch);
+  vuint8** I1 = LoadPGM_vui8matrix("./hall/hall000001.pgm", &nrl, &nrh, &ncl, &nch);
 
-  vuint8**E = frameDifference("./hall/hall000000.pgm", "./hall/hall000001.pgm", &nrl,&nrh,&ncl,&nch);
+  vuint8**E = frameDifference(I0, I1, &nrl,&nrh,&ncl,&nch);
 
   SavePGM_vui8matrix(E, nrl, nrh, ncl, nch, "hall1SIMDtest.pgm");
 
