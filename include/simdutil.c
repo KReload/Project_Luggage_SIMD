@@ -43,14 +43,14 @@ vuint8** LoadPGM_vui8matrix(char *filename, long *nrl, long *nrh, long *ncl, lon
   /* ouverture du fichier */
   file = fopen(filename,"rb");
   if (file==NULL)
-    nrerror("ouverture du fichier impossible\n");
+    fprintf(stderr,"ouverture du fichier impossible\n");
     //nrerror("ouverture du fichier %s impossible\n", filename);
 
   /* lecture de l'entete du fichier pgm */
   readitem(file, buffer);
   /*fscanf(fichier, "%s", buffer);*/
   if(strcmp(buffer, "P5") != 0)
-    nrerror("entete du fichier %s invalide\n");
+    fprintf(stderr,"entete du fichier %s invalide\n");
     //nrerror("entete du fichier %s invalide\n", filename);
 
   width  = atoi(readitem(file, buffer));
@@ -87,7 +87,7 @@ void SavePGM_vui8matrix(vuint8 **m, long nrl, long nrh, long ncl, long nch, char
   file = fopen(filename, "wb");
   if (file == NULL)
     //nrerror("ouverture du fichier %s impossible dans SavePGM_bmatrix\n", filename);
-    nrerror("ouverture du fichier %s impossible dans SavePGM_vui8matrix\n");
+    fprintf(stderr,"ouverture du fichier %s impossible dans SavePGM_vui8matrix\n");
 
   /* enregistrement de l'image au format rpgm */
   
