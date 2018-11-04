@@ -26,12 +26,12 @@ void detectionMouvement(uint8 theta)
       sprintf(filename1,"../hall/hall%06d.pgm",i+1);
       I0 = LoadPGM_ui8matrix(filename0, &nrl, &nrh, &ncl, &nch);
       I1 = LoadPGM_ui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
-      O = ui8matrix(nrl, nrh, ncl, nch);
-      E = ui8matrix(nrl, nrh, ncl, nch);
+      
       frameDifference(I0, I1, O, E, nrl, nrh, ncl, nch, theta);
       O = fermeture(O, nrl, nrh, ncl, nch, dim);
       E = fermeture(E, nrl, nrh, ncl, nch, dim);
-      
+      E = erosion(E, nrl, nrh, ncl, nch, dim);
+    
       sprintf(filenameO,"./hallFDO/hall%06dO.pgm",i);
       sprintf(filenameE,"./hallFDE/hall%06dE.pgm",i+1);
       
