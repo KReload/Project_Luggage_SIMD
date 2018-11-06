@@ -33,7 +33,10 @@ void detectionMouvement()
 
       sigmaDelta(I0, I1, M0, M1, V0, V1, O1, E1, nrl, nrh, ncl, nch);
       O1 = fermeture(O1, nrl, nrh, ncl, nch, dim);
+      E1 = ouverture(E1, nrl, nrh, ncl, nch, dim);
       E1 = fermeture(E1, nrl, nrh, ncl, nch, dim);
+      E1 = ouverture(E1, nrl, nrh, ncl, nch, 5);
+      E1 = fermeture(E1, nrl, nrh, ncl, nch, 5);
       
       sprintf(filenameO,"./hallSDO/hall%06dO.pgm",i);
       sprintf(filenameE,"./hallSDE/hall%06dE.pgm",i+1);
@@ -44,6 +47,16 @@ void detectionMouvement()
       copy_ui8matrix_ui8matrix (V1, nrl, nrh, ncl, nch, V0);
       copy_ui8matrix_ui8matrix (M1, nrl, nrh, ncl, nch, M0);
     }
+
+  // free_ui8matrix(O1, nrl+2, nrh+2, ncl+2, nch+2);
+  // free_ui8matrix(E1, nrl+2, nrh+2, ncl+2, nch+2);
+  free_ui8matrix(I0, nrl, nrh, ncl, nch);
+  free_ui8matrix(I1, nrl, nrh, ncl, nch);
+  free_ui8matrix(V0, nrl, nrh, ncl, nch);
+  free_ui8matrix(V1, nrl, nrh, ncl, nch);
+  free_ui8matrix(M0, nrl, nrh, ncl, nch);
+  free_ui8matrix(M1, nrl, nrh, ncl, nch);
+
 }
 
 int main(int argc, char* argv[])

@@ -29,9 +29,9 @@ void detectionMouvement(uint8 theta)
       
       frameDifference(I0, I1, O, E, nrl, nrh, ncl, nch, theta);
       O = fermeture(O, nrl, nrh, ncl, nch, dim);
+      E = ouverture(E, nrl, nrh, ncl, nch, dim);
       E = fermeture(E, nrl, nrh, ncl, nch, dim);
-      E = erosion(E, nrl, nrh, ncl, nch, dim);
-    
+      
       sprintf(filenameO,"./hallFDO/hall%06dO.pgm",i);
       sprintf(filenameE,"./hallFDE/hall%06dE.pgm",i+1);
       
@@ -39,6 +39,10 @@ void detectionMouvement(uint8 theta)
       SavePGM_ui8matrix(E, nrl, nrh, ncl, nch, filenameE);
       
     }
+  //free_ui8matrix(O, nrl, nrh, ncl, nch);
+  //free_ui8matrix(E, nrl, nrh, ncl, nch);
+  free_ui8matrix(I0, nrl, nrh, ncl, nch);
+  free_ui8matrix(I1, nrl, nrh, ncl, nch);
 }
 
 int main(int argc, char* argv[])

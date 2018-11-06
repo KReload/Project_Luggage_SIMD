@@ -6,7 +6,7 @@ uint8** dilatation(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 {
   int r = dim/2;
   int max = 0;
-
+  
   //Allocation sortie de taille (r+dim)*(c+dim) pour avoir une bordure
   uint8** output = ui8matrix(nrl-r, nrh+r, ncl-r, nch+r);
   
@@ -28,7 +28,7 @@ uint8** dilatation(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 	  max = 0;
 	}
     }
-
+  
   return output;
 }
 
