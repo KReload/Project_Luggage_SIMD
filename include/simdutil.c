@@ -99,6 +99,24 @@ void SavePGM_vui8matrix(vuint8 **m, long nrl, long nrh, long ncl, long nch, char
   /* fermeture du fichier */
   fclose(file);
 }
+
+
+void mullo_epi8(vuint8 left, vuint8 right, vuint16* lo, vuint16* hi) {
+
+  vuint8 zeros= init_vuint8(0);
+  vuint16 left_lo= _mm_unpacklo_epi8(left,zeros);
+  vuint16 left_hi= _mm_unpackhi_epi8(left,zeros);
+  vuint16 right_lo= _mm_unpacklo_epi8(right,zeros);
+  vuint16 right_hi= _mm_unpackhi_epi8(right,zeros);
+
+  //vuint8 a = _mm_set_epi16(1,2,3,4,5,6,7,65535);
+  //vuint8 b = _mm_set_epi16(1,2,3,4,5,6,7,3);
+  
+  *lo = _mm_mullo_epi16(left_lo,right_lo);
+  *hi = _mm_mullo_epi16(left_hi,right_hi);
+
+
+}
 /*
 int main(void)
 {

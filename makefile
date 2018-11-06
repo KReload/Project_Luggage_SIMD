@@ -17,6 +17,7 @@ test: nrutil.o morpho.o framediff.o sigdelta.o
 	gcc test/testMorpho.c ./obj/nrutil.o ./obj/morpho.o -o test/testMorpho
 	gcc test/testfd.c ./obj/nrutil.o ./obj/morpho.o ./obj/framediff.o -o test/testfd
 	gcc test/testsd.c ./obj/nrutil.o ./obj/morpho.o ./obj/sigdelta.o -o test/testsd
+	gcc test/testsd_simd.c ./obj/vnrutil.o ./obj/simdutil.o ./obj/nrutil.o -Wall -o test/testsd_simd
 
 validation: nrutil.o validation.o
 	gcc ./validation/validation_FD.c ./obj/nrutil.o ./obj/validation.o -o ./validation/validation_FD $(LIB)
