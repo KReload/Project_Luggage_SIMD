@@ -35,8 +35,8 @@ void detectionMouvement()
       O1 = fermeture(O1, nrl, nrh, ncl, nch, dim);
       E1 = ouverture(E1, nrl, nrh, ncl, nch, dim);
       E1 = fermeture(E1, nrl, nrh, ncl, nch, dim);
-      E1 = ouverture(E1, nrl, nrh, ncl, nch, 5);
-      E1 = fermeture(E1, nrl, nrh, ncl, nch, 5);
+      //E1 = ouverture(E1, nrl, nrh, ncl, nch, 5);
+      //E1 = fermeture(E1, nrl, nrh, ncl, nch, 5);
       
       sprintf(filenameO,"./hallSDO/hall%06dO.pgm",i);
       sprintf(filenameE,"./hallSDE/hall%06dE.pgm",i+1);
