@@ -12,6 +12,8 @@
 #include "../include/vnrutil.h"
 #include "../include/simdutil.h"
 
+#define N_OCTET 16
+
 void test_mullo_epi8() {
     //Max values
     vuint8 n = init_vuint8(5);
@@ -28,8 +30,47 @@ void test_mullo_epi8() {
 
 }
 
+void printResultTest(char*desctest, int test) {
+    printf("\t\t%s",desctest);
+    if(test){
+        printf("\u2714\n");
+    } else {
+        printf("\u274c\n");
+    }
+}
+
+//Test sub_abs_epi8 takes only unsigned
+void test_sub_abs() {
+    printf("\nTesting sub_abs_epi8\n");
+    vuint8 left[1];
+    vuint8 right[1];
+
+    uint8*vecl = (uint8*) left;
+    uint8*vecr = (uint8*) right;
+
+    _mm_store_si128(left, sub_abs_epi8(init_vuint8(5),init_vuint8(255)));
+    _mm_store_si128(right, sub_abs_epi8(init_vuint8(255),init_vuint8(5)));
+
+    int checkTest = 1;
+
+    for(int i = 0; i< N_OCTET;i++) {
+        if(vecl[i]!=vecr[i]){
+            checkTest = 0;
+        }
+    }
+
+    printResultTest("\tsub_abs_epi8(a,b) should be equal to sub_abs_epi(b,a): ", checkTest);
+
+}
+
+void test_sel_si128(){
+    printf('\nTesting sel_si128');
+    //sel_si128(_m)
+}
+
 int main(){
-    test_mullo_epi8();
+    test_sub_abs();
+    //test_mullo_epi8();
     /*//vuint8** test = vui8matrix(0,3,0,3);
     vuint8 n = init_vuint8(5);
     vuint8 value = init_vuint8(255);
