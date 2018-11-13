@@ -52,4 +52,6 @@ clean:
 .PHONY: bench
 bench: nrutil.o morpho.o mouvement.o
 	gcc ./benchmark/bench.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o ./benchmark/bench $(LIB)
+bench_SSE2: mouvement_SSE2.o
+	gcc ./benchmark/bench_SSE2.c ./obj/mouvement_SSE2.o -o ./benchmark/bench_SSE2
 

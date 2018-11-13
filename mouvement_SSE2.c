@@ -37,7 +37,7 @@ vuint8** frameDifference(vuint8** I0, vuint8** I1, long* nrl,long* nrh,long* ncl
       {
         O[i][j] = sub_abs_epi8(I0[i][j],I1[i][j]);
         
-        c = (vuint8)_mm_cmplt_epi8((__m128i)theta,(__m128i)O[i][j]);
+        c = (vuint8)_mm_cmplt_epu8((__m128i)theta,(__m128i)O[i][j]);
 
         d = sel_si128(c,high,low);
 
@@ -50,7 +50,7 @@ vuint8** frameDifference(vuint8** I0, vuint8** I1, long* nrl,long* nrh,long* ncl
 }
 
 
-vuint8** sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long nch)
+vuint8** sigmaDelta(vuint8** I0, vuint8** I1, vuint8** M0, vuint8** M1, vuint8** V0, vuint8** V1, vuint8** O1, vuint8** E1, long nrl,long nrh, long ncl, long nch)
 {
   vuint8** M0 = I0;
   vuint8** M1 = vui8matrix(nrl,nrh,ncl,nch);
@@ -67,11 +67,11 @@ vuint8** sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long 
       for(int j = 0; j < nch; j++)
       {
 
-        c = _mm_cmplt_epi8(M0[i][j],I1[i][j]);
-        d = _mm_cmplt_epi8(I1[i][j],M0[i][j]);
+        c = _mm_cmplt_epu8(M0[i][j],I1[i][j]);
+        d = _mm_cmplt_epu8(I1[i][j],M0[i][j]);
 
-        k = _mm_add_epi8(M0[i][j], (__m128i)init_vuint8((uint8)1));
-        l = _mm_sub_epi8(M0[i][j], (__m128i)init_vuint8((uint8)1));
+        k = _mm_adds_epu8(M0[i][j], (__m128i)init_vuint8((uint8)1));
+        l = _mm_subs_epu8(M0[i][j], (__m128i)init_vuint8((uint8)1));
         //Condition c M0 > I1, store le résultat k sinon store le résultat de la condition d M0 < I1 qui renvoie l sinon renvoie M0[i][j]
 
         _mm_store_si128((__m128i*)&M1[i][j],
@@ -95,11 +95,11 @@ vuint8** sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long 
       for(int k =0;k< N;k++) {
         NmulOt = _mm_adds_epu8(NmulOt, O1[i][j]);
       }
-      c = _mm_cmplt_epi8(V0[i][j],NmulOt);
-      d = _mm_cmplt_epi8(NmulOt,V0[i][j]);
+      c = _mm_cmplt_epu8(V0[i][j],NmulOt);
+      d = _mm_cmplt_epu8(NmulOt,V0[i][j]);
 
-      k = _mm_add_epi8(V0[i][j], (__m128i)init_vuint8((uint8)1));
-      l = _mm_sub_epi8(V0[i][j], (__m128i)init_vuint8((uint8)1));
+      k = _mm_adds_epu8(V0[i][j], (__m128i)init_vuint8((uint8)1));
+      l = _mm_subs_epu8(V0[i][j], (__m128i)init_vuint8((uint8)1));
 
       _mm_store_si128((__m128i*)&V1[i][j],
           sel_si128(c,k,sel_si128(d,l,V0[i][j]))
@@ -124,7 +124,7 @@ vuint8** sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long 
   {
     for(int j = 0; j < nch; j++)
     {
-      c = _mm_cmplt_epi8(O1[i][j],V1[i][j]);
+      c = _mm_cmplt_epu8(O1[i][j],V1[i][j]);
 
       k = init_vuint8((uint8)0);
       l = init_vuint8((uint8)255);
