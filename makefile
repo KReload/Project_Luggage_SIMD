@@ -7,7 +7,7 @@ OBJ = ./obj/*.o
 OTHER = ./test/*.c~ ./test/*.pgm ./include/*.c~ ./include/*.h~ *.c~
 LIB = -lm
 
-all: nrutil.o vnrutil.o morpho.o framediff.o sigdelta.o simdutil.o
+all: nrutil.o vnrutil.o morpho.o framediff.o sigdelta.o simdutil.o morpho_SSE2.o
 	gcc mouvement_FD.c ./obj/nrutil.o ./obj/morpho.o ./obj/framediff.o -o ./exe/mouvement_FD
 	gcc mouvement_SD.c ./obj/nrutil.o ./obj/morpho.o ./obj/sigdelta.o -o ./exe/mouvement_SD
 	gcc mouvement_SSE2.c ./obj/simdutil.o ./obj/vnrutil.o ./obj/nrutil.o -o ./exe/mouvement_SSE2
@@ -43,6 +43,9 @@ simdutil.o:
 
 validation.o:
 	gcc -c ./include/validation.c -o ./obj/validation.o $(LIB)
+
+morpho_SSE2.o:
+	gcc -c ./include/morpho_SSE2.c -o ./obj/morpho_SSE2.o
 
 clean:
 	rm -rf $(OBJ) $(EXEC) $(OTHER) $(HDIR)

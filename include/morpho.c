@@ -18,7 +18,7 @@ uint8** dilatation(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 	    {
 	      for(int p = j-r; p < j+(r+1); p++)
 		{
-		  if(k < nrl || p < ncl || k > nrh || j > nch)
+		  if(k < nrl || p < ncl || k > nrh || p > nch)
 		    max = 0;
 		  else
 		    max = MAX(M[k][p],max);
@@ -49,7 +49,7 @@ uint8** erosion(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 	    {
 	      for(int p = j-r; p < j+(r+1); p++)
 		{
-		  if(k < nrl || p < ncl || k > nrh || j > nch)
+		  if(k < nrl || p < ncl || k > nrh || p > nch)
 		    min = 255;
 		  else
 		    min = MIN(M[k][p],min);

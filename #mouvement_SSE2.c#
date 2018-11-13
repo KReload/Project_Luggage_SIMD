@@ -70,7 +70,7 @@ void sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long nch)
     {
       for(int j = 0; j < nch; j++)
       {
-
+	
         c = _mm_cmplt_epi8(M0[i][j],I1[i][j]);
         d = _mm_cmplt_epi8(I1[i][j],M0[i][j]);
 
@@ -79,8 +79,8 @@ void sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long nch)
         //Condition c M0 > I1, store le résultat k sinon store le résultat de la condition d M0 < I1 qui renvoie l sinon renvoie M0[i][j]
 
         _mm_store_si128((__m128i*)&M1[i][j],
-          sel_si128(c,k,sel_si128(d,l,M0[i][j]))
-        );
+			sel_si128(c,k,sel_si128(d,l,M0[i][j]))
+			);
       }
     }
 
@@ -99,10 +99,10 @@ void sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long nch)
       
       c = _mm_cmplt_epi8(V0[i][j],_mm_mul_epu32((__m128i)init_vuint8((uint8)N),O1[i][j]));
       d = _mm_cmplt_epi8(_mm_mul_epu32((__m128i)init_vuint8((uint8)N),O1[i][j]),V0[i][j]);
-
+      
       k = _mm_add_epi8(V0[i][j], (__m128i)init_vuint8((uint8)1));
       l = _mm_sub_epi8(V0[i][j], (__m128i)init_vuint8((uint8)1));
-    /*if(V0[i][j] < N*O1[i][j]) 
+      /*if(V0[i][j] < N*O1[i][j]) 
       V1[i][j] = V0[i][j] + 1;
     else if(V0[i][j] > N*O1[i][j])
       v1[i][j] = V0[i][j] - 1;
