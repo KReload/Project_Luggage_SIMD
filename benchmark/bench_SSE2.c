@@ -42,8 +42,8 @@ void detectionMouvement()
 
   // free_ui8matrix(O1, nrl+2, nrh+2, ncl+2, nch+2);
   // free_ui8matrix(E1, nrl+2, nrh+2, ncl+2, nch+2);
-   free_vui8matrix(I0, nrl, nrh, ncl, nch);
-   free_vui8matrix(I1, nrl, nrh, ncl, nch);
+  free_vui8matrix(I0, nrl, nrh, ncl, nch);
+  free_vui8matrix(I1, nrl, nrh, ncl, nch);
   free_vui8matrix(V0, nrl, nrh, ncl, nch);
   free_vui8matrix(V1, nrl, nrh, ncl, nch);
   free_vui8matrix(M0, nrl, nrh, ncl, nch);
