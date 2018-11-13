@@ -73,7 +73,7 @@ vuint8** sigmaDelta(vuint8** I0, vuint8** I1, vuint8** M0, vuint8** M1, vuint8**
 
   //Step 2 : O1 Computation
 
-	      O1[i][j] = sub_abs_epi8(M1[i][j],I1[i][j]);
+	      _mm_store_si128((__m128i*)&O1[i][j], sub_abs_epi8(M1[i][j],I1[i][j]));
 
 
   //Step 3 : V1 Update and Clamping
@@ -81,17 +81,20 @@ vuint8** sigmaDelta(vuint8** I0, vuint8** I1, vuint8** M0, vuint8** M1, vuint8**
         for(int k =0;k< N;k++) {
           NmulOt = _mm_adds_epu8(NmulOt, O1[i][j]);
         }
+
         c = _mm_cmplt_epu8(V0[i][j],NmulOt);
         d = _mm_cmplt_epu8(NmulOt,V0[i][j]);
 
+  
         k = _mm_adds_epu8(V0[i][j], (__m128i)init_vuint8((uint8)1));
         l = _mm_subs_epu8(V0[i][j], (__m128i)init_vuint8((uint8)1));
 
         _mm_store_si128((__m128i*)&V1[i][j],sel_si128(c,k,sel_si128(d,l,V0[i][j])));
 
+        /*
         _mm_store_si128((__m128i*)&V1[i][j],
           _mm_max_epu8(_mm_min_epu8(V1[i][j], init_vuint8((uint8)VMAX)), init_vuint8((uint8)VMIN)));
-
+        */
 
     //Step 4 : E1 Estimation
 

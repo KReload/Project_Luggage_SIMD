@@ -13,7 +13,7 @@ void detectionMouvement()
   char* filenameO = (char*) malloc(sizeof(char) * (FILENAMESIZE+2));
   vuint8** I0;
   vuint8** I1;
-  vuint8** M0 = LoadPGM_vui8matrix("./hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
+  vuint8** M0 = LoadPGM_vui8matrix("../hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
   vuint8** O1 = vui8matrix(nrl, nrh, ncl, nch);
   vuint8** E1 = vui8matrix(nrl, nrh, ncl, nch);
   vuint8** M1 = vui8matrix(nrl, nrh, ncl, nch);
@@ -22,8 +22,8 @@ void detectionMouvement()
   
   for(int i = 0; i < NIMAGES - 1; i++)
     {
-      sprintf(filename0,"./hall/hall%06d.pgm",i);
-      sprintf(filename1,"./hall/hall%06d.pgm",i+1);
+      sprintf(filename0,"../hall/hall%06d.pgm",i);
+      sprintf(filename1,"../hall/hall%06d.pgm",i+1);
       I0 = LoadPGM_vui8matrix(filename0, &nrl, &nrh, &ncl, &nch);
       I1 = LoadPGM_vui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
 
@@ -32,8 +32,8 @@ void detectionMouvement()
       //E1 = ouverture(E1, nrl, nrh, ncl, nch, 5);
       //E1 = fermeture(E1, nrl, nrh, ncl, nch, 5);
       
-      sprintf(filenameO,"./hallSSESDO/hall%06dO.pgm",i);
-      sprintf(filenameE,"./hallSSESDE/hall%06dE.pgm",i+1);
+      sprintf(filenameO,"../hallSSESDO/hall%06dO.pgm",i);
+      sprintf(filenameE,"../hallSSESDE/hall%06dE.pgm",i+1);
       
       SavePGM_vui8matrix(O1, nrl, nrh, ncl, nch, filenameO);
       SavePGM_vui8matrix(E1, nrl, nrh, ncl, nch, filenameE);
