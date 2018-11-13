@@ -1,10 +1,14 @@
-
+#include "morpho.h"
+#include "mouvement.h"
+#include <math.h>
 
 #include <x86intrin.h>
 #include <stdio.h>
+#include <time.h>
 #define NITER 2
 #define NRUN 5
 
+/*
 #define CHRONO(X,t)                         \                    
     tmin = 2147483647;                      \
     for(int run=0; run < NRUN; run++) {     \
@@ -19,3 +23,4 @@
         }                                   \
     }                                       \
     t = tmin/2
+*/

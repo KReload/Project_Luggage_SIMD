@@ -7,17 +7,16 @@ OBJ = ./obj/*.o
 OTHER = ./test/*.c~ ./test/*.pgm ./include/*.c~ ./include/*.h~ *.c~
 LIB = -lm
 
-all: nrutil.o vnrutil.o morpho.o framediff.o sigdelta.o simdutil.o morpho_SSE2.o mouvement_SSE2.o
-	gcc mouvement_FD.c ./obj/nrutil.o ./obj/morpho.o ./obj/framediff.o -o ./exe/mouvement_FD
-	gcc mouvement_SD.c ./obj/nrutil.o ./obj/morpho.o ./obj/sigdelta.o -o ./exe/mouvement_SD
+all: nrutil.o vnrutil.o morpho.o mouvement.o simdutil.o morpho_SSE2.o mouvement_SSE2.o
+	gcc mouvement_FD.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o ./exe/mouvement_FD
+	gcc mouvement_SD.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o ./exe/mouvement_SD
 
-test: nrutil.o morpho.o framediff.o sigdelta.o mouvement_SSE2.o
+test: nrutil.o morpho.o mouvement.o  mouvement_SSE2.o
 	gcc test/testOpen.c ./obj/nrutil.o -o test/testOpen
 	gcc test/testMorpho.c ./obj/nrutil.o ./obj/morpho.o -o test/testMorpho
-	gcc test/testfd.c ./obj/nrutil.o ./obj/morpho.o ./obj/framediff.o -o test/testfd
-	gcc test/testsd.c ./obj/nrutil.o ./obj/morpho.o ./obj/sigdelta.o -o test/testsd
+	gcc test/testfd.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o test/testfd
+	gcc test/testsd.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o test/testsd
 	gcc test/testsd_simd.c ./obj/vnrutil.o ./obj/simdutil.o ./obj/nrutil.o ./obj/mouvement_SSE2.o -Wall -o test/testsd_simd
-	gcc test/testmax_simd.c ./obj/vnrutil.o ./obj/simdutil.o ./obj/nrutil.o -Wall -o test/testmax_simd
 
 validation: nrutil.o validation.o
 	gcc ./validation/validation_FD.c ./obj/nrutil.o ./obj/validation.o -o ./validation/validation_FD $(LIB)
@@ -35,11 +34,8 @@ vnrutil.o:
 morpho.o:
 	gcc -c ./include/morpho.c -o ./obj/morpho.o
 
-framediff.o:
-	gcc -c ./include/framediff.c -o ./obj/framediff.o
-
-sigdelta.o:
-	gcc -c ./include/sigdelta.c -o ./obj/sigdelta.o
+mouvement.o:
+	gcc -c mouvement.c -o ./obj/mouvement.o
 
 simdutil.o:
 	gcc -c ./include/simdutil.c -o ./obj/simdutil.o
@@ -54,6 +50,6 @@ clean:
 	rm -rf $(OBJ) $(EXEC) $(OTHER) $(HDIR)
 
 .PHONY: bench
-bench:
-	gcc ./benchmark/bench.c -o ./benchmark/bench
+bench: nrutil.o morpho.o mouvement.o
+	gcc ./benchmark/bench.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o ./benchmark/bench $(LIB)
 

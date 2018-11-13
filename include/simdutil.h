@@ -1,3 +1,8 @@
+#include "vnrutil.h"
+#include <stdio.h>
+#include <stddef.h>
+#include <ctype.h> 
+
 #define sub_abs_epi8(a,b) _mm_or_si128(_mm_subs_epu8(a,b),_mm_subs_epu8(b,a))
 #define sel_si128(vcontrole,a,b) _mm_or_si128(_mm_and_si128(vcontrole,a),_mm_andnot_si128(vcontrole,b))
 #define MAX_SSE(a,b) (sel_si128((vuint8)_mm_cmplt_epi8((__m128i)a,(__m128i)b),b,a))

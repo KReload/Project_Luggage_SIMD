@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 
+
 uint8** dilatation(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 {
   int r = dim/2;

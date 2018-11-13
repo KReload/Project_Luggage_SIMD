@@ -3,6 +3,9 @@
 #include "include/morpho.h"
 #include "include/mouvement.h"
 
+#define FILENAMESIZE 22
+#define NIMAGES 300
+
 
 void detectionMouvement(uint8 theta)
 {

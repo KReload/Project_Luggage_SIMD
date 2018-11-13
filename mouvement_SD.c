@@ -1,10 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "include/morpho.h"
-#include "include/sigdelta.h"
-
-#define FILENAMESIZE 22
-#define NIMAGES 300
+#include "include/mouvement.h"
 
 
 void detectionMouvement()
@@ -32,12 +29,13 @@ void detectionMouvement()
       I1 = LoadPGM_ui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
 
       sigmaDelta(I0, I1, M0, M1, V0, V1, O1, E1, nrl, nrh, ncl, nch);
+      /*
       O1 = fermeture(O1, nrl, nrh, ncl, nch, dim);
       E1 = ouverture(E1, nrl, nrh, ncl, nch, dim);
       E1 = fermeture(E1, nrl, nrh, ncl, nch, dim);
-      //E1 = ouverture(E1, nrl, nrh, ncl, nch, 5);
-      //E1 = fermeture(E1, nrl, nrh, ncl, nch, 5);
-      
+      E1 = ouverture(E1, nrl, nrh, ncl, nch, 5);
+      E1 = fermeture(E1, nrl, nrh, ncl, nch, 5);
+      */
       sprintf(filenameO,"./hallSDO/hall%06dO.pgm",i);
       sprintf(filenameE,"./hallSDE/hall%06dE.pgm",i+1);
       

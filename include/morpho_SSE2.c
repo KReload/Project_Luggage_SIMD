@@ -1,14 +1,4 @@
-#include "morpho.h"
-#include <stdio.h>
-#include "vnrutil.h"
-#include "simdutil.h"
-#include <stddef.h>
-#include <ctype.h> 
-
-vuint8 sel_si128(vuint8 vcontrole,vuint8 a, vuint8 b){
-  return _mm_or_si128(_mm_and_si128((__m128i)vcontrole,(__m128i)a),_mm_andnot_si128((__m128i)vcontrole,(__m128i)b));
-}
-
+#include "morpho_SSE2.h"
 
 vuint8** dilatation_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 {
@@ -35,7 +25,7 @@ vuint8** dilatation_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 		  vnrl = init_vuint8((uint8)nrl);
 		  vnrh = init_vuint8((uint8)nrh);
 
-		  max = MAX_SSE(M[k][p],max);
+		  max = _mm_max_epu8(M[k][p],max);
 
 		  cmp0 = _mm_cmplt_epi8(vk,vnrl);
 		  cmp1 = _mm_cmplt_epi8(vp,vncl);
@@ -82,7 +72,7 @@ vuint8** erosion_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 		  vnrl = init_vuint8((uint8)nrl);
 		  vnrh = init_vuint8((uint8)nrh);
 
-		  min = MIN_SSE(M[k][p],min);
+		  min =  _mm_min_epu8(M[k][p],min);
 
 		  cmp0 = _mm_cmplt_epi8(vk,vnrl);
 		  cmp1 = _mm_cmplt_epi8(vp,vncl);
