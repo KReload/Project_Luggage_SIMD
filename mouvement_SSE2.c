@@ -52,12 +52,6 @@ vuint8** frameDifference(vuint8** I0, vuint8** I1, long* nrl,long* nrh,long* ncl
 
 vuint8** sigmaDelta(vuint8** I0, vuint8** I1, vuint8** M0, vuint8** M1, vuint8** V0, vuint8** V1, vuint8** O1, vuint8** E1, long nrl,long nrh, long ncl, long nch)
 {
-  vuint8** M0 = I0;
-  vuint8** M1 = vui8matrix(nrl,nrh,ncl,nch);
-  vuint8** V0 = vui8matrix(nrl,nrh,ncl,nch);
-  vuint8** V1 = vui8matrix(nrl,nrh,ncl,nch);
-  vuint8** O1 = vui8matrix(nrl,nrh,ncl,nch);
-  vuint8** E1 = vui8matrix(nrl,nrh,ncl,nch);
 
   vuint8 NmulOt;
   vuint8 c,d,a,b,k,l;
@@ -74,78 +68,41 @@ vuint8** sigmaDelta(vuint8** I0, vuint8** I1, vuint8** M0, vuint8** M1, vuint8**
         l = _mm_subs_epu8(M0[i][j], (__m128i)init_vuint8((uint8)1));
         //Condition c M0 > I1, store le résultat k sinon store le résultat de la condition d M0 < I1 qui renvoie l sinon renvoie M0[i][j]
 
-        _mm_store_si128((__m128i*)&M1[i][j],
-          sel_si128(c,k,sel_si128(d,l,M0[i][j]))
-        );
-      }
-    }
+        _mm_store_si128((__m128i*)&M1[i][j],sel_si128(c,k,sel_si128(d,l,M0[i][j])));
+
 
   //Step 2 : O1 Computation
-  for(int i = 0; i < nrh; i++)
-    {
-      for(int j = 0; j < nch; j++)
+
 	      O1[i][j] = sub_abs_epi8(M1[i][j],I1[i][j]);
-    }
+
 
   //Step 3 : V1 Update and Clamping
-  for(int i = 0; i < nrh; i++)
-  {
-    for(int j = 0; j < nch; j++)
-    {
-      for(int k =0;k< N;k++) {
-        NmulOt = _mm_adds_epu8(NmulOt, O1[i][j]);
+
+        for(int k =0;k< N;k++) {
+          NmulOt = _mm_adds_epu8(NmulOt, O1[i][j]);
+        }
+        c = _mm_cmplt_epu8(V0[i][j],NmulOt);
+        d = _mm_cmplt_epu8(NmulOt,V0[i][j]);
+
+        k = _mm_adds_epu8(V0[i][j], (__m128i)init_vuint8((uint8)1));
+        l = _mm_subs_epu8(V0[i][j], (__m128i)init_vuint8((uint8)1));
+
+        _mm_store_si128((__m128i*)&V1[i][j],sel_si128(c,k,sel_si128(d,l,V0[i][j])));
+
+        _mm_store_si128((__m128i*)&V1[i][j],
+          _mm_max_epu8(_mm_min_epu8(V1[i][j], init_vuint8((uint8)VMAX)), init_vuint8((uint8)VMIN)));
+
+
+    //Step 4 : E1 Estimation
+
+        c = _mm_cmplt_epu8(O1[i][j],V1[i][j]);
+
+        k = init_vuint8((uint8)0);
+        l = init_vuint8((uint8)255);
+
+        _mm_store_si128((__m128i*)&E1[i][j], sel_si128(c,k,l));
       }
-      c = _mm_cmplt_epu8(V0[i][j],NmulOt);
-      d = _mm_cmplt_epu8(NmulOt,V0[i][j]);
-
-      k = _mm_adds_epu8(V0[i][j], (__m128i)init_vuint8((uint8)1));
-      l = _mm_subs_epu8(V0[i][j], (__m128i)init_vuint8((uint8)1));
-
-      _mm_store_si128((__m128i*)&V1[i][j],
-          sel_si128(c,k,sel_si128(d,l,V0[i][j]))
-      );
-
-      _mm_store_si128((__m128i*)&V1[i][j],
-        _mm_max_epu8(_mm_min_epu8(V1[i][j], init_vuint8((uint8)VMAX)), init_vuint8((uint8)VMIN))
-      );
-    /*if(V0[i][j] < N*O1[i][j]) 
-      V1[i][j] = V0[i][j] + 1;
-    else if(V0[i][j] > N*O1[i][j])
-      v1[i][j] = V0[i][j] - 1;
-    else
-      V1[i][j] = V0[i][j];
-    V1[i][j] = MAX(MIN(V1[i][j],VMAX),VMIN); //Clamp*/
     }
-  }
-
-  //Step 4 : E1 Estimation
-
-  for(int i = 0; i < nrh; i++)
-  {
-    for(int j = 0; j < nch; j++)
-    {
-      c = _mm_cmplt_epu8(O1[i][j],V1[i][j]);
-
-      k = init_vuint8((uint8)0);
-      l = init_vuint8((uint8)255);
-
-      _mm_store_si128((__m128i*)&E1[i][j],
-          sel_si128(c,k,l)
-      );
-    }
-  }
-  /*for(int i = 0; i < nrh; i++)
-    {
-      for(int j = 0; j < nch; j++)
-	{
-	  if(O1[i][j] < V1[i][j])
-	    E1[i][j] = 0;
-	  else
-	    E1[i][j] = 1; //ou 255
-	}
-  
-    }
-  */
 
   return E1;
 
