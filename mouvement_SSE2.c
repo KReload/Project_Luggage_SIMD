@@ -1,14 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
-#include <stddef.h>
-#include <ctype.h> 
-#include <math.h> /* fabs */
 
 
-#include "include/vnrutil.h"
-#include "include/simdutil.h"
+#include "include/mouvement_SSE2.h"
 
 #define FILENAMESIZE 40
 #define NIMAGES 300
@@ -16,14 +8,17 @@
 #define THETA 10
 #define N 4
 
-vuint8 sub_abs_epi8(vuint8 a, vuint8 b){
+#define VMAX 255
+#define VMIN 0
+
+/*vuint8 sub_abs_epi8(vuint8 a, vuint8 b){
   return _mm_or_si128(_mm_subs_epu8((__m128i)a,(__m128i)b),_mm_subs_epu8((__m128i)b,(__m128i)a));
 }
 
 vuint8 sel_si128(vuint8 vcontrole,vuint8 a, vuint8 b){
   return _mm_or_si128(_mm_and_si128((__m128i)vcontrole,(__m128i)a),_mm_andnot_si128((__m128i)vcontrole,(__m128i)b));
 }
-
+*/
 vuint8** frameDifference(vuint8** I0, vuint8** I1, long* nrl,long* nrh,long* ncl, long* nch)
 {
   
@@ -55,7 +50,7 @@ vuint8** frameDifference(vuint8** I0, vuint8** I1, long* nrl,long* nrh,long* ncl
 }
 
 
-void sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long nch)
+vuint8** sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long nch)
 {
   vuint8** M0 = I0;
   vuint8** M1 = vui8matrix(nrl,nrh,ncl,nch);
@@ -64,6 +59,7 @@ void sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long nch)
   vuint8** O1 = vui8matrix(nrl,nrh,ncl,nch);
   vuint8** E1 = vui8matrix(nrl,nrh,ncl,nch);
 
+  vuint8 NmulOt;
   vuint8 c,d,a,b,k,l;
   //Step 1 : M1 estimation
   for(int i = 0; i < nrh; i++)
@@ -96,12 +92,22 @@ void sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long nch)
   {
     for(int j = 0; j < nch; j++)
     {
-      
-      c = _mm_cmplt_epi8(V0[i][j],_mm_mul_epu32((__m128i)init_vuint8((uint8)N),O1[i][j]));
-      d = _mm_cmplt_epi8(_mm_mul_epu32((__m128i)init_vuint8((uint8)N),O1[i][j]),V0[i][j]);
+      for(int k =0;k< N;k++) {
+        NmulOt = _mm_adds_epu8(NmulOt, O1[i][j]);
+      }
+      c = _mm_cmplt_epi8(V0[i][j],NmulOt);
+      d = _mm_cmplt_epi8(NmulOt,V0[i][j]);
 
       k = _mm_add_epi8(V0[i][j], (__m128i)init_vuint8((uint8)1));
       l = _mm_sub_epi8(V0[i][j], (__m128i)init_vuint8((uint8)1));
+
+      _mm_store_si128((__m128i*)&V1[i][j],
+          sel_si128(c,k,sel_si128(d,l,V0[i][j]))
+      );
+
+      _mm_store_si128((__m128i*)&V1[i][j],
+        _mm_max_epu8(_mm_min_epu8(V1[i][j], init_vuint8((uint8)VMAX)), init_vuint8((uint8)VMIN))
+      );
     /*if(V0[i][j] < N*O1[i][j]) 
       V1[i][j] = V0[i][j] + 1;
     else if(V0[i][j] > N*O1[i][j])
@@ -113,6 +119,21 @@ void sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long nch)
   }
 
   //Step 4 : E1 Estimation
+
+  for(int i = 0; i < nrh; i++)
+  {
+    for(int j = 0; j < nch; j++)
+    {
+      c = _mm_cmplt_epi8(O1[i][j],V1[i][j]);
+
+      k = init_vuint8((uint8)0);
+      l = init_vuint8((uint8)255);
+
+      _mm_store_si128((__m128i*)&E1[i][j],
+          sel_si128(c,k,l)
+      );
+    }
+  }
   /*for(int i = 0; i < nrh; i++)
     {
       for(int j = 0; j < nch; j++)
@@ -122,14 +143,16 @@ void sigmaDelta(vuint8** I0, vuint8** I1, long nrl,long nrh, long ncl, long nch)
 	  else
 	    E1[i][j] = 1; //ou 255
 	}
-
+  
     }
   */
+
+  return E1;
 
 }
 
 
-
+/*
 int main(void)
 {
   long nrl, nrh, ncl,nch;
@@ -149,17 +172,19 @@ int main(void)
     vuint8** I0 = LoadPGM_vui8matrix(filename0, &nrl, &nrh, &ncl, &nch);
     vuint8** I1 = LoadPGM_vui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
     
-    vuint8**E = frameDifference(I0, I1, &nrl,&nrh,&ncl,&nch);
-  
+    //vuint8**E = frameDifference(I0, I1, &nrl,&nrh,&ncl,&nch);
+    vuint8**E = sigmaDelta(I0, I1, nrl,nrh,ncl,nch);
+      
     SavePGM_vui8matrix(E, nrl, nrh, ncl, nch, filename2);
 
     
     
   }
+  
 
   free(filename0);
   free(filename1);
   free(filename2);
   return 0;
 
-}
+}*/

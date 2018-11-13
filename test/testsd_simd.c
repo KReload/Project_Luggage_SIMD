@@ -12,8 +12,10 @@
 #include "../include/vnrutil.h"
 #include "../include/simdutil.h"
 
-#define N_OCTET 16
+#include "../include/mouvement_SSE2.h"
 
+#define N_OCTET 16
+/*
 void test_mullo_epi8() {
     //Max values
     vuint8 n = init_vuint8(5);
@@ -28,10 +30,10 @@ void test_mullo_epi8() {
     display_vuint16(_mm_cmpeq_epi16(res,*hi),"%x \n","TEST SI 0xFFFF valide hi: \n");
 
 
-}
+}*/
 
 void printResultTest(char*desctest, int test) {
-    printf("\t\t%s",desctest);
+    printf("\t\t%s: ",desctest);
     if(test){
         printf("\u2714\n");
     } else {
@@ -59,44 +61,78 @@ void test_sub_abs() {
         }
     }
 
-    printResultTest("\tsub_abs_epi8(a,b) should be equal to sub_abs_epi(b,a): ", checkTest);
+    printResultTest("sub_abs_epi8(a,b) should be equal to sub_abs_epi(b,a)", checkTest);
 
 }
 
 void test_sel_si128(){
-    printf('\nTesting sel_si128');
-    //sel_si128(_m)
+    printf("\nTesting sel_si128\n");
+    vuint8 res[1];
+    uint8*test = (uint8*)res;
+    int checkTest = 1;
+    _mm_store_si128(res, sel_si128(init_vuint8(2),init_vuint8(1),init_vuint8(0)));
+    //vcontrole 00000010 x 16
+    //v1        00000001 x16
+    //v2        00000000 x16
+    //res       00000000 x16
+    for(int i = 0;i<N_OCTET;i++){
+        if(test[i]){
+            checkTest = 0;
+        }
+    }
+
+    printResultTest("sel_si128(init_vuint8(2),init_vuint8(1),init_vuint8(0)) should return a 0-initialized vuint8 vector", checkTest);
+    checkTest = 1;
+
+    _mm_store_si128(res, sel_si128(init_vuint8(1),init_vuint8(1),init_vuint8(0)));
+
+    //vcontrole 00000001 x 16
+    //v1        00000001 x16
+    //v2        00000000 x16
+    //res       00000001 x16
+    for(int i = 0;i<N_OCTET;i++){
+        if(test[i]!=1){
+            checkTest = 0;
+        }
+    }
+
+    printResultTest("sel_si128(init_vuint8(1),init_vuint8(1),init_vuint8(0)) should return a 1-initialized vuint8 vector", checkTest);
+    checkTest = 1;
+
+    _mm_store_si128(res, sel_si128(init_vuint8(3),init_vuint8(7),init_vuint8(2)));
+
+    //vcontrole 00000011 x 16
+    //v1        00000111 x16
+    //v2        00000010 x16
+    //res       00000000 x16
+    for(int i = 0;i<N_OCTET;i++){
+        if(test[i]!=3){
+            checkTest = 0;
+        }
+    }
+
+    printResultTest("sel_si128(init_vuint8(3),init_vuint8(7),init_vuint8(2)) should return a 3-initialized vuint8 vector", checkTest);
+    checkTest = 1;
+
+    _mm_store_si128(res, sel_si128(init_vuint8(3),init_vuint8(3),init_vuint8(252)));
+
+    //vcontrole 00000011 x 16
+    //v1        00000011 x16
+    //v2        11111100 x16
+    //res       11111111 x16
+    for(int i = 0;i<N_OCTET;i++){
+        if(test[i]!=255){
+            checkTest = 0;
+        }
+    }
+    printResultTest("sel_si128(init_vuint8(3),init_vuint8(3),init_vuint8(252)) should return a 255-initialized vuint8 vector", checkTest);
+
 }
 
 int main(){
     test_sub_abs();
+    test_sel_si128();
     //test_mullo_epi8();
-    /*//vuint8** test = vui8matrix(0,3,0,3);
-    vuint8 n = init_vuint8(5);
-    vuint8 value = init_vuint8(255);
-    vuint8 zeros= init_vuint8(0);
-    vuint16 n_lo= _mm_unpacklo_epi8(n,zeros);
-    vuint16 n_hi= _mm_unpackhi_epi8(n,zeros);
-    vuint16 value_lo= _mm_unpacklo_epi8(value,zeros);
-    vuint16 value_hi= _mm_unpackhi_epi8(value,zeros);
-
-    //vuint8 a = _mm_set_epi16(1,2,3,4,5,6,7,65535);
-    //vuint8 b = _mm_set_epi16(1,2,3,4,5,6,7,3);
     
-    vuint16 c = _mm_mullo_epi16(n_lo,value_lo);
-    vuint16 d = _mm_mullo_epi16(n_hi,value_hi);
-
-
-    display_vuint16(n_lo,"%d \t", "n_lo:\t");
-    printf("\n");
-    display_vuint16(c,"%d \t", "LOW:\t");
-    printf("\n");
-
-
-    display_vuint16(d,"%d \t", "HIGH:\t");
-    printf("\n");*/
-
-    
-
     return 0;
 }
