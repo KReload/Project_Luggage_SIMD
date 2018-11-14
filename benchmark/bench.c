@@ -24,10 +24,10 @@ void calculMatriceROC(float64** ROC, uint8** img, uint8** img_vt, long nrl, long
 	}
     }
 
-  ROC[0][0] += vp;
-  ROC[0][1] += fn;
-  ROC[1][0] += fp;
-  ROC[1][1] += vn;
+  ROC[0][0] += (float64) vp;
+  ROC[0][1] += (float64) fn;
+  ROC[1][0] += (float64) fp;
+  ROC[1][1] += (float64) vn;
 }
 
 double calculMCC(float64** ROC)
@@ -114,7 +114,6 @@ void benchDetectionMouvementSD()
 void benchDetectionMouvementFD(uint8 theta)
 {
   clock_t startFD, endFD, startTot, endTot, startMorpho, endMorpho;
-  startTot = clock();
   double cpuTimeFD = 0.0;
   double cpuTimeTot = 0.0;
   double cpuTimeMorpho = 0.0;
@@ -136,6 +135,7 @@ void benchDetectionMouvementFD(uint8 theta)
       I0 = LoadPGM_ui8matrix(filename0, &nrl, &nrh, &ncl, &nch);
       I1 = LoadPGM_ui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
 
+      startTot = clock();
       startFD = clock();
       frameDifference(I0, I1, O, E, nrl, nrh, ncl, nch, theta);
       endFD = clock();
@@ -146,6 +146,9 @@ void benchDetectionMouvementFD(uint8 theta)
       E = fermeture(E, nrl, nrh, ncl, nch, dim);
       endMorpho = clock();
       cpuTimeMorpho += ((double) (endMorpho-startMorpho))/ CLOCKS_PER_SEC * 1000;
+      endTot = clock();
+      cpuTimeTot += ((double) (endTot-startTot))/ CLOCKS_PER_SEC * 1000;
+      
       sprintf(filenameO,"../exe/hallFDO/hall%06dO.pgm",i);
       sprintf(filenameE,"../exe/hallFDE/hall%06dE.pgm",i+1);
       
@@ -157,8 +160,7 @@ void benchDetectionMouvementFD(uint8 theta)
   //free_ui8matrix(E, nrl, nrh, ncl, nch);
   free_ui8matrix(I0, nrl, nrh, ncl, nch);
   free_ui8matrix(I1, nrl, nrh, ncl, nch);
-  endTot = clock();
-  cpuTimeTot = ((double) (endTot-startTot))/ CLOCKS_PER_SEC * 1000;
+
   printf("Temps passé dans l'algo FD : %f ms\n", cpuTimeFD);
   printf("Temps passé dans les algos de morphologies : %f ms\n", cpuTimeMorpho);
   printf("Temps total : %f ms\n", cpuTimeTot);
@@ -170,6 +172,10 @@ void benchQualitatifFD()
   long nrl, nrh, ncl, nch;
   
   float64** ROC = f64matrix(0, 2, 0, 2);
+  ROC[0][0] = 0.0;
+  ROC[0][1] = 0.0;
+  ROC[1][0] = 0.0;
+  ROC[1][1] = 0.0;
   uint8** IVT;
   uint8** IFD;
   char* filename0 = (char*) malloc(sizeof(char) * 19);
@@ -185,9 +191,11 @@ void benchQualitatifFD()
  
       calculMatriceROC(ROC, IFD, IVT, nrl, nrh, ncl, nch);
     }
+
   mcc = calculMCC(ROC);
   display_f64matrix(ROC,0,1,0,1,"%f ","Matrice ROC : ");
   printf("\nMCC = %f\n",mcc); 
+
   free_ui8matrix(IVT, nrl, nrh, ncl, nch);
   free_ui8matrix(IFD, nrl, nrh, ncl, nch);
   free_f64matrix(ROC, 0, 2, 0, 2);
@@ -198,6 +206,10 @@ void benchQualitatifSD()
   long nrl, nrh, ncl, nch;
   double mcc;
   float64** ROC = f64matrix(0, 2, 0, 2);
+  ROC[0][0] = 0.0;
+  ROC[0][1] = 0.0;
+  ROC[1][0] = 0.0;
+  ROC[1][1] = 0.0;
   uint8** IVT;
   uint8** ISD;
   char* filename0 = (char*) malloc(sizeof(char) * 20);
@@ -213,16 +225,14 @@ void benchQualitatifSD()
 
       calculMatriceROC(ROC, ISD, IVT, nrl, nrh, ncl, nch);
    }
+  
   mcc = calculMCC(ROC);
   display_f64matrix(ROC,0,1,0,1,"%f ","Matrice ROC : ");
   printf("\nMCC = %f\n",mcc); 
+
   free_ui8matrix(IVT, nrl, nrh, ncl, nch);
   free_ui8matrix(ISD, nrl, nrh, ncl, nch);
   free_f64matrix(ROC, 0, 2, 0, 2);
-}
-
-void print(char* msg) {
-    printf("%s\n", msg);
 }
 
 int main(int argc, char const *argv[])

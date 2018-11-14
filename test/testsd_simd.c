@@ -13,6 +13,7 @@
 #include "../include/simdutil.h"
 
 #include "../include/mouvement_SSE2.h"
+#include "../include/morpho_SSE2.h"
 
 #define N_OCTET 16
 /*
@@ -351,10 +352,33 @@ void test_lt(){
 
 }
 
+
+void test_dilatation()
+{
+  vuint8**img = vui8matrix(0, 10, 0, 10);
+
+  for(int i = 0; i < 10; i++)
+    {
+      for(int j = 0; j < 10; j++)
+	{
+	  if(i == 5 && j == 5)
+	    img[i][j] = init_vuint8((uint8)1);
+	  else
+	    img[i][j] = init_vuint8((uint8)0);
+	}
+    }
+
+  display_vui8matrix (img, 0, 10, 0, 10, "%d ", "IMG :");
+  printf("===================================\n");
+  vuint8**M = dilatation_SSE(img,0, 10, 0, 10, 3);
+  display_vui8matrix (M, 0, 10, 0, 10, "%d ", "M DILATE :");
+}
+
 int main(){
     test_sub_abs();
     test_sel_si128();
     test_lt();
+    test_dilatation();
     //test_frame_difference();
     //test_mullo_epi8();
     

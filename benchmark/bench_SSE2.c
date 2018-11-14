@@ -1,4 +1,5 @@
 #include "../include/mouvement_SSE2.h"
+#include "../include/morpho_SSE2.h"
 
 #define FILENAMESIZE 22
 #define NIMAGES 300
@@ -29,8 +30,8 @@ void detectionMouvement()
 
       sigmaDelta(I0, I1, M0, M1, V0, V1, O1, E1, nrl, nrh, ncl, nch);
 
-      //E1 = ouverture(E1, nrl, nrh, ncl, nch, 5);
-      //E1 = fermeture(E1, nrl, nrh, ncl, nch, 5);
+      //E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, 5);
+      //E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, 5);
       
       sprintf(filenameO,"../hallSSESDO/hall%06dO.pgm",i);
       sprintf(filenameE,"../hallSSESDE/hall%06dE.pgm",i+1);

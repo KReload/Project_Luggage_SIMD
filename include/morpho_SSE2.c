@@ -1,5 +1,16 @@
 #include "morpho_SSE2.h"
 
+void copy_vui8matrix_vui8matrix(vuint8 **X, int i0, int i1, int j0, int j1, vuint8 **Y)
+{
+    int i, j;
+
+    for(i=i0; i<=i1; i++) {
+        for(j=j0; j<=j1; j++) {
+            Y[i][j] = X[i][j];
+        }
+    }
+}
+
 vuint8** dilatation_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 {
   int r = dim/2;
@@ -7,35 +18,20 @@ vuint8** dilatation_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
   vuint8 zero = init_vuint8((uint8)0);
   vuint8 cmp0, cmp1, cmp2, cmp3;
   vuint8 vk, vp, vnrl, vncl, vnrh, vnch;
+
+  vuint8** tmp = vui8matrix(nrl-r, nrh+r, ncl-r, nch+r);
+  vuint8** output = vui8matrix(nrl, nrh, ncl, nch);
+  copy_vui8matrix_vui8matrix(M, nrl, nrh, ncl, nch, tmp);
   
-  //Allocation sortie de taille (r+dim)*(c+dim) pour avoir une bordure
-  vuint8** output = vui8matrix(nrl-r, nrh+r, ncl-r, nch+r);
-  for(int i = 0; i < nrh; i++)
+  for(int i = nrl; i < nrh; i++)
     {
-      for(int j = 0; j < nch; j++)
+      for(int j = ncl; j < nch; j++)
 	{
 	  for(int k = i-r; k < i+(r+1); k++)
 	    {
 	      for(int p = j-r; p < j+(r+1); p++)
 		{
-		  vk = init_vuint8((uint8)k);
-		  vp = init_vuint8((uint8)p);
-		  vncl = init_vuint8((uint8)ncl);
-		  vnch = init_vuint8((uint8)nch);
-		  vnrl = init_vuint8((uint8)nrl);
-		  vnrh = init_vuint8((uint8)nrh);
-
-		  max = _mm_max_epu8(M[k][p],max);
-
-		  cmp0 = _mm_cmplt_epi8(vk,vnrl);
-		  cmp1 = _mm_cmplt_epi8(vp,vncl);
-		  cmp2 = _mm_cmplt_epi8(vnrh,vk);
-		  cmp3 = _mm_cmplt_epi8(vnch,vp);
-
-		  max = sel_si128(cmp0,zero,max);
-		  max = sel_si128(cmp1,zero,max);
-		  max = sel_si128(cmp2,zero,max);
-		  max = sel_si128(cmp3,zero,max);
+		  max =  _mm_max_epu8(tmp[k][p],max);
 		}
 	    }
 	  _mm_store_si128((__m128i*)&output[i][j],max);
@@ -55,8 +51,10 @@ vuint8** erosion_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
   vuint8 cmp0, cmp1, cmp2, cmp3;
   vuint8 vk, vp, vnrl, vncl, vnrh, vnch;
   
-  //Allocation sortie de taille (r+dim)*(c+dim) pour avoir une bordure
-  vuint8** output = vui8matrix(nrl-r, nrh+r, ncl-r, nch+r);
+  vuint8** tmp = vui8matrix(nrl-r, nrh+r, ncl-r, nch+r);
+  vuint8** output = vui8matrix(nrl, nrh, ncl, nch);
+  copy_vui8matrix_vui8matrix(M, nrl, nrh, ncl, nch, tmp);
+  
    for(int i = 0; i < nrh; i++)
     {
       for(int j = 0; j < nch; j++)
@@ -65,24 +63,7 @@ vuint8** erosion_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 	    {
 	      for(int p = j-r; p < j+(r+1); p++)
 		{
-		  vk = init_vuint8((uint8)k);
-		  vp = init_vuint8((uint8)p);
-		  vncl = init_vuint8((uint8)ncl);
-		  vnch = init_vuint8((uint8)nch);
-		  vnrl = init_vuint8((uint8)nrl);
-		  vnrh = init_vuint8((uint8)nrh);
-
-		  min =  _mm_min_epu8(M[k][p],min);
-
-		  cmp0 = _mm_cmplt_epi8(vk,vnrl);
-		  cmp1 = _mm_cmplt_epi8(vp,vncl);
-		  cmp2 = _mm_cmplt_epi8(vnrh,vk);
-		  cmp3 = _mm_cmplt_epi8(vnch,vp);
-		  
-		  min = sel_si128(cmp0,nzero,min);
-		  min = sel_si128(cmp1,nzero,min);
-		  min = sel_si128(cmp2,nzero,min);
-		  min = sel_si128(cmp3,nzero,min);
+		  min = _mm_min_epu8(tmp[k][p],min);
 		}
 	    }
 	  _mm_store_si128((__m128i*)&output[i][j],min);

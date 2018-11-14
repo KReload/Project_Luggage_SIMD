@@ -8,9 +8,11 @@ uint8** dilatation(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
   int r = dim/2;
   int max = 0;
   
-  //Allocation sortie de taille (r+dim)*(c+dim) pour avoir une bordure
-  uint8** output = ui8matrix(nrl-r, nrh+r, ncl-r, nch+r);
-  
+  uint8** output = ui8matrix(nrl, nrh, ncl, nch);
+  uint8** tmp = ui8matrix(nrl-r,nrh+r,ncl-r,nch+r);
+
+  copy_ui8matrix_ui8matrix(M, nrl, nrh, ncl, nch, tmp);
+    
   for(int i = 0; i < nrh; i++)
     {
       for(int j = 0; j < nch; j++)
@@ -19,10 +21,7 @@ uint8** dilatation(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 	    {
 	      for(int p = j-r; p < j+(r+1); p++)
 		{
-		  if(k < nrl || p < ncl || k > nrh || p > nch)
-		    max = 0;
-		  else
-		    max = MAX(M[k][p],max);
+		  max = MAX(tmp[k][p],max);
 		}
 	    }
 	  output[i][j] = max;
@@ -38,9 +37,11 @@ uint8** erosion(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
   int r = dim/2;
   int min = 255;
 
-  //Allocation sortie de taille (r+dim)*(c+dim) pour avoir une bordure
-  uint8** output = ui8matrix(nrl-r, nrh+r, ncl-r, nch+r);
-  
+  uint8** output = ui8matrix(nrl, nrh, ncl, nch);
+  uint8** tmp = ui8matrix(nrl-r,nrh+r,ncl-r,nch+r);
+
+  copy_ui8matrix_ui8matrix(M, nrl, nrh, ncl, nch, tmp);
+    
    
   for(int i = 0; i < nrh; i++)
     {
@@ -50,10 +51,7 @@ uint8** erosion(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 	    {
 	      for(int p = j-r; p < j+(r+1); p++)
 		{
-		  if(k < nrl || p < ncl || k > nrh || p > nch)
-		    min = 255;
-		  else
-		    min = MIN(M[k][p],min);
+		  min = MIN(tmp[k][p],min);
 		}
 	    }
 	  output[i][j] = min;
