@@ -37,19 +37,19 @@ void detectionMouvement()
 
       sigmaDelta(I0, I1, M0, M1, V0, V1, O1, E1, nrl, nrh, ncl, nch);
       
-      //E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, dim);
-      //E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, dim);
-      /*E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, 5);
-      E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, 5);*/
+      E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, dim);
+      E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, dim);
+      E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, 5);
+      E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, 5);
 
-      E1 = erosion_SSE3x3_elemVertical(E1, nrl, nrh, ncl, nch);
-      E1 = erosion_SSE3x3_elemHorizontal(E1, nrl, nrh, ncl, nch);
-      E1 = erosion_SSE3x3_elemVertical(E1, nrl, nrh, ncl, nch);
-      E1 = erosion_SSE3x3_elemHorizontal(E1, nrl, nrh, ncl, nch);
-      E1 = erosion_SSE3x3_elemVertical(E1, nrl, nrh, ncl, nch);
-      E1 = erosion_SSE3x3_elemHorizontal(E1, nrl, nrh, ncl, nch);
-      E1 = erosion_SSE3x3_elemVertical(E1, nrl, nrh, ncl, nch);
-      E1 = erosion_SSE3x3_elemHorizontal(E1, nrl, nrh, ncl, nch);
+      // E1 = erosion_SSE3x3_elemVertical(E1, nrl, nrh, ncl, nch);
+      // E1 = erosion_SSE3x3_elemHorizontal(E1, nrl, nrh, ncl, nch);
+      // E1 = erosion_SSE3x3_elemVertical(E1, nrl, nrh, ncl, nch);
+      // E1 = erosion_SSE3x3_elemHorizontal(E1, nrl, nrh, ncl, nch);
+      // E1 = erosion_SSE3x3_elemVertical(E1, nrl, nrh, ncl, nch);
+      // E1 = erosion_SSE3x3_elemHorizontal(E1, nrl, nrh, ncl, nch);
+      // E1 = erosion_SSE3x3_elemVertical(E1, nrl, nrh, ncl, nch);
+      // E1 = erosion_SSE3x3_elemHorizontal(E1, nrl, nrh, ncl, nch);
 
       
       endSD = clock();
