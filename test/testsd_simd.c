@@ -438,12 +438,10 @@ void test_mm_cplt_8to16(){
     printf("\n");
     display_vuint16(_mm_unpacklo_epi8(a,init_vuint8(0)),"%d ", "unpack lo: ");
     printf("\n");
-    hi = _mm_cmplt_epi16(_mm_unpackhi_epi8(a,init_vuint8(0)),init_vuint16(256));
-    lo = _mm_cmplt_epi16(_mm_unpacklo_epi8(a,init_vuint8(0)),init_vuint16(254));
 
-    c = _mm_packs_epi16(hi,lo);
+    //c = _mm_packs_epi16(_mm_cmplt_epi16(_mm_unpackhi_epi8(a,init_vuint8(0)),init_vuint16(256)),_mm_cmplt_epi16(_mm_unpacklo_epi8(a,init_vuint8(0)),init_vuint16(254)));
 
-    c = _mm_adds_epu8(c, init_vuint8(128));
+    c = _mm_cmplt_epu8to16(a,init_vuint16(256), init_vuint16(256));
     display_vuint8(c,"%d ", "PACK: ");
 }
 
