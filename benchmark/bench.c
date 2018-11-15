@@ -79,10 +79,10 @@ void benchDetectionMouvementSD()
       cpuTimeSD += ((double) (endSD-startSD))/ CLOCKS_PER_SEC * 1000;
 
       startMorpho = clock();
-      E1 = ouverture(E1, nrl, nrh, ncl, nch, dim);
-      E1 = fermeture(E1, nrl, nrh, ncl, nch, dim);
-      E1 = ouverture(E1, nrl, nrh, ncl, nch, 5);
-      E1 = fermeture(E1, nrl, nrh, ncl, nch, 5);
+      // E1 = ouverture(E1, nrl, nrh, ncl, nch, dim);
+      // E1 = fermeture(E1, nrl, nrh, ncl, nch, dim);
+      // E1 = ouverture(E1, nrl, nrh, ncl, nch, 5);
+      // E1 = fermeture(E1, nrl, nrh, ncl, nch, 5);
       endMorpho = clock();
       cpuTimeMorpho += ((double) (endMorpho-startMorpho))/CLOCKS_PER_SEC * 1000;
       
@@ -142,8 +142,8 @@ void benchDetectionMouvementFD(uint8 theta)
       cpuTimeFD += ((double) (endFD-startFD))/ CLOCKS_PER_SEC * 1000;
 
       startMorpho = clock();
-      E = ouverture(E, nrl, nrh, ncl, nch, dim);
-      E = fermeture(E, nrl, nrh, ncl, nch, dim);
+      // E = ouverture(E, nrl, nrh, ncl, nch, dim);
+      // E = fermeture(E, nrl, nrh, ncl, nch, dim);
       endMorpho = clock();
       cpuTimeMorpho += ((double) (endMorpho-startMorpho))/ CLOCKS_PER_SEC * 1000;
       endTot = clock();
@@ -239,7 +239,7 @@ int main(int argc, char const *argv[])
 {
   int theta = 10;
   printf("+==========================+\nFrame Difference :\n");
-  //benchDetectionMouvementFD(theta);
+  benchDetectionMouvementFD(theta);
   //benchQualitatifFD();
   
   printf("+==========================+\nSigma Delta :\n");
