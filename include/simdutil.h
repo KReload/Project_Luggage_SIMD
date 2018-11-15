@@ -10,6 +10,9 @@
 #define MAX_SSE(a,b) (sel_si128((vuint8)_mm_cmplt_epi8((__m128i)a,(__m128i)b),b,a))
 #define MIN_SSE(a,b) (sel_si128((vuint8)_mm_cmplt_epi8((__m128i)a,(__m128i)b),a,b))
 
+#define shift_right_add_prec_si128(a,b,imm) _mm_or_si128(_mm_slli_si128(a,imm),_mm_srli_si128(b,16-imm))
+#define shift_left_add_next_si128(a,b,imm) _mm_or_si128(_mm_srli_si128(a,imm),_mm_slli_si128(b,16-imm))
+
 void ReadPGMrowSIMD(FILE *file, long width, vuint8  *line);
 void WritePGMrowSIMD(vuint8 *line, long width, FILE  *file);
 vuint8** LoadPGM_vui8matrix(char *filename, long *nrl, long *nrh, long *ncl, long *nch);

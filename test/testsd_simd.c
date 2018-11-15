@@ -51,8 +51,8 @@ void test_sub_abs() {
     uint8*vecl = (uint8*) left;
     uint8*vecr = (uint8*) right;
 
-    _mm_store_si128(left, sub_abs_epi8(init_vuint8(5),init_vuint8(255)));
-    _mm_store_si128(right, sub_abs_epi8(init_vuint8(255),init_vuint8(5)));
+    _mm_store_si128(left, _mm_sad_epu8(init_vuint8(5),init_vuint8(255)));
+    _mm_store_si128(right, _mm_sad_epu8(init_vuint8(255),init_vuint8(5)));
 
     int checkTest = 1;
 
@@ -353,34 +353,111 @@ void test_lt(){
 }
 
 
-void test_dilatation()
-{
-  vuint8**img = vui8matrix(0, 10, 0, 10);
+// void test_dilatation()
+// {
+//   vuint8**img = vui8matrix(0, 10, 0, 10);
 
-  for(int i = 0; i < 10; i++)
-    {
-      for(int j = 0; j < 10; j++)
-	{
-	  if(i == 5 && j == 5)
-	    img[i][j] = init_vuint8((uint8)1);
-	  else
-	    img[i][j] = init_vuint8((uint8)0);
-	}
+//   for(int i = 0; i < 10; i++)
+//     {
+//       for(int j = 0; j < 10; j++)
+// 	{
+// 	  if(i == 5 && j == 5)
+// 	    img[i][j] = init_vuint8((uint8)1);
+// 	  else
+// 	    img[i][j] = init_vuint8((uint8)0);
+// 	}
+//     }
+
+//   display_vui8matrix (img, 0, 10, 0, 10, "%d ", "IMG :");
+//   printf("===================================\n");
+//   vuint8**M = dilatation_SSE(img,0, 10, 0, 10, 3);
+//   display_vui8matrix (M, 0, 10, 0, 10, "%d ", "M DILATE :");
+// }
+
+
+//Fais un décalage de imm bit, et complète avec les bits précédents
+void test_shift_right_add_prec_si128() {
+    printf("Test shift right add prec:\n");
+    vuint8 a = init_vuint8(200);
+    vuint8 b = init_vuint8(100);
+    vuint8 c[1]; 
+    uint8* test = (uint8*)c;
+    c[0]= shift_right_add_prec_si128(a,b,2);
+
+    int checkTest = 1;
+    if(test[0] != 100) {
+        checkTest = 0;
+    } else if (test[1] != 100) {
+        checkTest = 0;
+    } else {
+        for(int i=2;i<16;i++) {
+            if(test[i]!=200) {
+                checkTest = 0;
+            }
+        }
     }
 
-  display_vui8matrix (img, 0, 10, 0, 10, "%d ", "IMG :");
-  printf("===================================\n");
-  vuint8**M = dilatation_SSE(img,0, 10, 0, 10, 3);
-  display_vui8matrix (M, 0, 10, 0, 10, "%d ", "M DILATE :");
+    printResultTest("Testing if (200*16),(100*16),2 return (100*2,200*14)", checkTest);
+
+}
+
+void test_shift_left_add_next_si128() {
+    printf("Test shift left add next:\n");
+    vuint8 a = init_vuint8(200);
+    vuint8 b = init_vuint8(100);
+    vuint8 c[1]; 
+    uint8* test = (uint8*)c;
+    c[0]= shift_left_add_next_si128(a,b,2);
+
+    int checkTest = 1;
+    if(test[15] != 100) {
+        checkTest = 0;
+    } else if (test[14] != 100) {
+        checkTest = 0;
+    } else {
+        for(int i=0;i<14;i++) {
+            if(test[i]!=200) {
+                checkTest = 0;
+            }
+        }
+    }
+
+    printResultTest("Testing if (200*16),(100*16),2 return (100*2,200*14)", checkTest);
+
+}
+
+void test_mm_cplt_8to16(){
+    vuint8 a = init_vuint8(255);
+    vuint8 b = init_vuint8(1);
+    vuint16 c;
+    vuint16 hi, lo;
+
+    display_vuint8(a,"%d ", "a: ");
+    printf("\n");
+    display_vuint16(_mm_unpackhi_epi8(a,init_vuint8(0)),"%d ", "unpack hi: ");
+    printf("\n");
+    display_vuint16(_mm_unpacklo_epi8(a,init_vuint8(0)),"%d ", "unpack lo: ");
+    printf("\n");
+    hi = _mm_cmplt_epi16(_mm_unpackhi_epi8(a,init_vuint8(0)),init_vuint16(256));
+    lo = _mm_cmplt_epi16(_mm_unpacklo_epi8(a,init_vuint8(0)),init_vuint16(254));
+
+    c = _mm_packs_epi16(hi,lo);
+
+    c = _mm_adds_epu8(c, init_vuint8(128));
+    display_vuint8(c,"%d ", "PACK: ");
 }
 
 int main(){
     test_sub_abs();
     test_sel_si128();
     test_lt();
-    test_dilatation();
+    //test_dilatation();
+    test_shift_right_add_prec_si128();
+    test_shift_left_add_next_si128();
     //test_frame_difference();
     //test_mullo_epi8();
+
+    test_mm_cplt_8to16();
     
     return 0;
 }
