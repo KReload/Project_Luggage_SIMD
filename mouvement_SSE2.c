@@ -53,7 +53,9 @@ vuint8** frameDifference(vuint8** I0, vuint8** I1, long* nrl,long* nrh,long* ncl
 vuint8** sigmaDelta(vuint8** I0, vuint8** I1, vuint8** M0, vuint8** M1, vuint8** V0, vuint8** V1, vuint8** O1, vuint8** E1, long nrl,long nrh, long ncl, long nch)
 {
 
-  vuint8 NmulOt;
+  vuint8 NmulOtHi = init_vuint8(0);
+  vuint8 NmulOtLo = init_vuint8(0);
+
   vuint8 c,d,a,b,k,l;
   //Step 1 : M1 estimation
   for(int i = 0; i < nrh; i++)
@@ -79,12 +81,14 @@ vuint8** sigmaDelta(vuint8** I0, vuint8** I1, vuint8** M0, vuint8** M1, vuint8**
   //Step 3 : V1 Update and Clamping
 
         for(int k =0;k< N;k++) {
-          NmulOt = _mm_adds_epu8(NmulOt, O1[i][j]);
+          NmulOtHi = _mm_adds_epu16(NmulOtHi, _mm_unpackhi_epi16(O1[i][j], init_vuint8(0)));
+          NmulOtLo = _mm_adds_epu16(NmulOtLo, _mm_unpacklo_epi16(O1[i][j], init_vuint8(0)));
+
         }
-
-        c = _mm_cmplt_epu8(V0[i][j],NmulOt);
-        d = _mm_cmplt_epu8(NmulOt,V0[i][j]);
-
+        //Unpack, fait la comparaison et pack le résultat fini par un clamp
+        c = _mm_cmplt_epu8to16(V0[i][j], NmulOtHi,NmulOtLo);
+        //c = _mm_cmplt_epu8(V0[i][j],NmulOt);
+        d = _mm_cmpgt_epu8to16(V0[i][j], NmulOtHi,NmulOtLo);
   
         k = _mm_adds_epu8(V0[i][j], (__m128i)init_vuint8((uint8)1));
         l = _mm_subs_epu8(V0[i][j], (__m128i)init_vuint8((uint8)1));

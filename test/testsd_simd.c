@@ -439,9 +439,10 @@ void test_mm_cplt_8to16(){
     display_vuint16(_mm_unpacklo_epi8(a,init_vuint8(0)),"%d ", "unpack lo: ");
     printf("\n");
 
-    //c = _mm_packs_epi16(_mm_cmplt_epi16(_mm_unpackhi_epi8(a,init_vuint8(0)),init_vuint16(256)),_mm_cmplt_epi16(_mm_unpacklo_epi8(a,init_vuint8(0)),init_vuint16(254)));
+    //c = _mm_packs_epi16(_mm_cmplt_epi16(init_vuint16(256),_mm_unpackhi_epi8(a,init_vuint8(0))),_mm_cmplt_epi16(init_vuint16(254),_mm_unpacklo_epi8(a,init_vuint8(0))));
 
-    c = _mm_cmplt_epu8to16(a,init_vuint16(256), init_vuint16(256));
+
+    c = _mm_cmpgt_epu8to16(a,init_vuint16(254), init_vuint16(256));
     display_vuint8(c,"%d ", "PACK: ");
 }
 
