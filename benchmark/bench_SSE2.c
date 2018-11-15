@@ -36,11 +36,14 @@ void detectionMouvement()
       I1 = LoadPGM_vui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
 
       sigmaDelta(I0, I1, M0, M1, V0, V1, O1, E1, nrl, nrh, ncl, nch);
+      V0 = V1;
+      M0 = M1;
+      display_vuint8(V1[10][10],"%d ", "\nvnow: " );
       
-      E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, dim);
+      /*E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, dim);
       E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, dim);
       E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, 5);
-      E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, 5);
+      E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, 5);*/
 
       // E1 = erosion_SSE3x3_elemVertical(E1, nrl, nrh, ncl, nch);
       // E1 = erosion_SSE3x3_elemHorizontal(E1, nrl, nrh, ncl, nch);
@@ -73,9 +76,8 @@ void detectionMouvement()
   // free_ui8matrix(E1, nrl+2, nrh+2, ncl+2, nch+2);
   free_vui8matrix(I0, nrl, nrh, ncl, nch);
   free_vui8matrix(I1, nrl, nrh, ncl, nch);
-  free_vui8matrix(V0, nrl, nrh, ncl, nch);
+  
   free_vui8matrix(V1, nrl, nrh, ncl, nch);
-  free_vui8matrix(M0, nrl, nrh, ncl, nch);
   free_vui8matrix(M1, nrl, nrh, ncl, nch);
 
 }
