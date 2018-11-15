@@ -239,12 +239,12 @@ int main(int argc, char const *argv[])
 {
   int theta = 10;
   printf("+==========================+\nFrame Difference :\n");
-  benchDetectionMouvementFD(theta);
-  benchQualitatifFD();
+  //benchDetectionMouvementFD(theta);
+  //benchQualitatifFD();
   
   printf("+==========================+\nSigma Delta :\n");
   benchDetectionMouvementSD();
-  benchQualitatifSD();
+  //benchQualitatifSD();
 
   
   /*

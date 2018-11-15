@@ -91,10 +91,10 @@ vuint8** sigmaDelta(vuint8** I0, vuint8** I1, vuint8** M0, vuint8** M1, vuint8**
 
         _mm_store_si128((__m128i*)&V1[i][j],sel_si128(c,k,sel_si128(d,l,V0[i][j])));
 
-        /*
+        
         _mm_store_si128((__m128i*)&V1[i][j],
           _mm_max_epu8(_mm_min_epu8(V1[i][j], init_vuint8((uint8)VMAX)), init_vuint8((uint8)VMIN)));
-        */
+        
 
     //Step 4 : E1 Estimation
 

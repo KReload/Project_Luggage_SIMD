@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <ctype.h> 
+#include <emmintrin.h>
 
 #define sub_abs_epi8(a,b) _mm_or_si128(_mm_subs_epu8(a,b),_mm_subs_epu8(b,a))
 #define sel_si128(vcontrole,a,b) _mm_or_si128(_mm_and_si128(vcontrole,a),_mm_andnot_si128(vcontrole,b))
