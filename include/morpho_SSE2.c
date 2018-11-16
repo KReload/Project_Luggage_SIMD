@@ -108,7 +108,7 @@ vuint8** dilatation_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, i
 
 			//Je sauvegarde dans output
 			_mm_store_si128(&output[i][j],
-				_mm_or_si128(elemStructa, _mm_or_si128(elemStructa, elemStructc))
+				_mm_or_si128(elemStructa, _mm_or_si128(elemStructb, elemStructc))
 			);
 		}
 	}
@@ -116,12 +116,12 @@ vuint8** dilatation_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, i
 	//Step 1.3: Epilogue de boucle
 
 	for(int j=0;j<nch;j++) {
-		elemStructb = _mm_load_si128(&M[nrh-2][j]);
-		elemStructc = _mm_load_si128(&M[nrh-1][j]);
+		elemStructa = _mm_load_si128(&M[nrh-2][j]);
+		elemStructb = _mm_load_si128(&M[nrh-1][j]);
 
 	//Sauvegarde de l'opération dans la sortie
 		_mm_store_si128(&output[nrh-1][j],
-			_mm_or_si128(elemStructb, elemStructc)
+			_mm_or_si128(elemStructa, elemStructb)
 		);
 	}
 
@@ -149,7 +149,7 @@ vuint8** dilatation_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl,
 		//resToStore = (__m128i)_mm_srli_si128((__m128i)elemStructc,15);
 		//resToStore = _mm_or_si128((__m128i)_mm_slli_si128((__m128i),1),resToStore);
 		resToStore = shift_left_add_next_si128(elemStructb,elemStructc,1);
-		resToStore = _mm_or_si128((__m128i)_mm_slli_si128((__m128i)elemStructb,1),resToStore);
+		resToStore = _mm_or_si128(_mm_slli_si128(elemStructb,1),resToStore);
 
 	//Sauvegarde de l'opération dans la sortie
 		_mm_store_si128(&output[i][0],
@@ -197,7 +197,7 @@ vuint8** dilatation_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl,
 		//resToStore = _mm_or_si128((__m128i)_mm_slli_si128((__m128i)elemStructb,1),resToStore);
 
 		resToStore = shift_right_add_prec_si128(elemStructb,elemStructa,1);
-		resToStore = _mm_or_si128((__m128i)_mm_srli_si128((__m128i)elemStructb,1),resToStore);
+		resToStore = _mm_or_si128(_mm_srli_si128(elemStructb,1),resToStore);
 
 	//Sauvegarde de l'opération dans la sortie
 		_mm_store_si128(&output[i][nch-1],
