@@ -14,10 +14,10 @@ clock_t startFD, endFD, startTot, endTot, startMorpho, endMorpho;
 
   long nrl, nrh, ncl, nch;
   int dim = 3;
-  char* filename0 = (char*) malloc(sizeof(char) * 21);
-  char* filename1 = (char*) malloc(sizeof(char) * 21);
-  char* filenameE = (char*) malloc(sizeof(char) * (FILENAMESIZE+2));
-  char* filenameO = (char*) malloc(sizeof(char) * (FILENAMESIZE+2));
+  char* filename0 = (char*) malloc(sizeof(char) * 22);
+  char* filename1 = (char*) malloc(sizeof(char) * 22);
+  char* filenameE = (char*) malloc(sizeof(char) * (FILENAMESIZE+3));
+  char* filenameO = (char*) malloc(sizeof(char) * (FILENAMESIZE+3));
   vuint8** I0 = LoadPGM_vui8matrix("../hall/hall000000.pgm", &nrl, &nrh, &ncl, &nch);
   vuint8** I1;
   vuint8** O = vui8matrix(nrl, nrh, ncl, nch);
@@ -76,10 +76,10 @@ void benchDetectionMouvementSDSSE2()
 
   long nrl, nrh, ncl, nch;
   int dim = 3;
-  char* filename0 = (char*) malloc(sizeof(char) * FILENAMESIZE);
-  char* filename1 = (char*) malloc(sizeof(char) * FILENAMESIZE);
-  char* filenameE = (char*) malloc(sizeof(char) * (FILENAMESIZE+2));
-  char* filenameO = (char*) malloc(sizeof(char) * (FILENAMESIZE+2));
+  char* filename0 = (char*) malloc(sizeof(char) * 22);
+  char* filename1 = (char*) malloc(sizeof(char) * 22);
+  char* filenameE = (char*) malloc(sizeof(char) * (FILENAMESIZE+3));
+  char* filenameO = (char*) malloc(sizeof(char) * (FILENAMESIZE+3));
   vuint8** I0;
   vuint8** I1;
   vuint8** M0 = LoadPGM_vui8matrix("../hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
