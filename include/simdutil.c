@@ -7,7 +7,18 @@
 
 #include "nrutil.h"
 
+void copy_vui8matrix_vui8matrix(vuint8 **X, int i0, int i1, int j0, int j1, vuint8 **Y)
+{
+    int i, j;
+	vuint8 tmp;
 
+    for(i=i0; i<=i1; i++) {
+        for(j=j0; j<=j1; j++) {
+			tmp = _mm_load_si128(X[i][j]);
+			_mm_store_si128(&Y[i][j], tmp);
+        }
+    }
+}
 
 void ReadPGMrowSIMD(FILE *file, long width, vuint8  *line)
 /* ---------------------------------------------- */

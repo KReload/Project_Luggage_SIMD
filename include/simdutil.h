@@ -15,6 +15,7 @@
 #define shift_right_add_prec_si128(a,b,imm) _mm_or_si128(_mm_slli_si128(a,imm),_mm_srli_si128(b,16-imm))
 #define shift_left_add_next_si128(a,b,imm) _mm_or_si128(_mm_srli_si128(a,imm),_mm_slli_si128(b,16-imm))
 
+void copy_vui8matrix_vui8matrix(vuint8 **X, int i0, int i1, int j0, int j1, vuint8 **Y);
 void ReadPGMrowSIMD(FILE *file, long width, vuint8  *line);
 void WritePGMrowSIMD(vuint8 *line, long width, FILE  *file);
 vuint8** LoadPGM_vui8matrix(char *filename, long *nrl, long *nrh, long *ncl, long *nch);
