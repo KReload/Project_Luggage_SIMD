@@ -114,8 +114,8 @@ void benchDetectionMouvementSDSSE2()
       
       cpuTimeSD += ((double) (endSD-startSD))/ CLOCKS_PER_SEC * 1000;
       
-      sprintf(filenameO,"../hallSSESDO/hall%06dO.pgm",i);
-      sprintf(filenameE,"../hallSSESDE/hall%06dE.pgm",i+1);
+      sprintf(filenameO,"../hallSSE/SDO/hall%06dO.pgm",i);
+      sprintf(filenameE,"../hallSSE/SDE/hall%06dE.pgm",i+1);
       
       SavePGM_vui8matrix(O1, nrl, nrh, ncl, nch, filenameO);
       SavePGM_vui8matrix(E1, nrl, nrh, ncl, nch, filenameE);
@@ -137,7 +137,10 @@ void benchDetectionMouvementSDSSE2()
 
 int main(int argc, char* argv[])
 {
+  printf("+==========================+\nFrame Difference :\n");
   benchDetectionMouvementFDSSE2();
+
+  printf("+==========================+\nSigma Delta :\n");
   benchDetectionMouvementSDSSE2();
 
   return 0;

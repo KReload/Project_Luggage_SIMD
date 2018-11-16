@@ -16,22 +16,6 @@
 #include "../include/morpho_SSE2.h"
 
 #define N_OCTET 16
-/*
-void test_mullo_epi8() {
-    //Max values
-    vuint8 n = init_vuint8(5);
-    vuint8 value = init_vuint8(255);
-    vuint16*lo = malloc(sizeof(vuint8));
-    vuint16*hi= malloc(sizeof(vuint8));
-    mullo_epi8(n,value,lo,hi);
-    
-    vuint16 res= init_vuint16(1275);
-
-    display_vuint16(_mm_cmpeq_epi16(res,*lo),"%x \n","TEST SI 0xFFFF valide lo: \n");
-    display_vuint16(_mm_cmpeq_epi16(res,*hi),"%x \n","TEST SI 0xFFFF valide hi: \n");
-
-
-}*/
 
 void printResultTest(char*desctest, int test) {
     printf("\t\t%s: ",desctest);
@@ -456,7 +440,7 @@ int main(){
     //test_frame_difference();
     //test_mullo_epi8();
 
-    test_mm_cplt_8to16();
+    //test_mm_cplt_8to16();
     
     return 0;
 }
