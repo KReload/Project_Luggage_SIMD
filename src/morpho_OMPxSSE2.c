@@ -1,4 +1,4 @@
-#include "morpho_SSE2.h"
+#include "../include/morpho_SSE2.h"
 
 //Effectue une dilatation SSE3x3 element vertical en O(r*c*s)
 vuint8** dilatation_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, int nch) {

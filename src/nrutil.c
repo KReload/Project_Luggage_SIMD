@@ -12,8 +12,8 @@
 #include <string.h>
 #include <math.h> /* fabs */
 
-#include "nrdef.h"
-#include "nrutil.h"
+#include "../include/nrdef.h"
+#include "../include/nrutil.h"
 
 //NR_END est maintenant defini dans nrutil.h
 

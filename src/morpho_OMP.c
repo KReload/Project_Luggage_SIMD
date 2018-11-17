@@ -1,6 +1,5 @@
-#include "morpho.h"
+#include "../include/morpho_OMP.h"
 #include <stdio.h>
-
 
 
 uint8** dilatation(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
@@ -12,20 +11,12 @@ uint8** dilatation(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
   uint8** tmp = ui8matrix(nrl-r,nrh+r,ncl-r,nch+r);
 
   copy_ui8matrix_ui8matrix(M, nrl, nrh, ncl, nch, tmp);
-    
+#pragma omp parallel for schedule(dynamic, CHUNK) num_threads(2)
   for(int i = 0; i < nrh; i++)
     {
       for(int j = 0; j < nch; j++)
 	{
-	  for(int k = i-r; k < i+(r+1); k++)
-	    {
-	      for(int p = j-r; p < j+(r+1); p++)
-		{
-		  max = MAX(tmp[k][p],max);
-		}
-	    }
-	  output[i][j] = max;
-	  max = 0;
+	  output[i][j] = tmp[i][j-1] | tmp[i][j] | tmp[i][j+1] | tmp[i-1][j-1] | tmp[i-1][j] | tmp[i-1][j+1] | tmp[i+1][j-1] | tmp[i+1][j] | tmp[i+1][j+1];
 	}
     }
   
@@ -41,21 +32,12 @@ uint8** erosion(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
   uint8** tmp = ui8matrix(nrl-r,nrh+r,ncl-r,nch+r);
 
   copy_ui8matrix_ui8matrix(M, nrl, nrh, ncl, nch, tmp);
-    
-   
+#pragma omp parallel for schedule(dynamic, CHUNK)
   for(int i = 0; i < nrh; i++)
     {
       for(int j = 0; j < nch; j++)
 	{
-	  for(int k = i-r; k < i+(r+1); k++)
-	    {
-	      for(int p = j-r; p < j+(r+1); p++)
-		{
-		  min = MIN(tmp[k][p],min);
-		}
-	    }
-	  output[i][j] = min;
-	  min = 255;
+	  output[i][j] = tmp[i][j-1] & tmp[i][j] & tmp[i][j+1] & tmp[i-1][j-1] & tmp[i-1][j] & tmp[i-1][j+1] & tmp[i+1][j-1] & tmp[i+1][j] & tmp[i+1][j+1];
 	}
     }
 

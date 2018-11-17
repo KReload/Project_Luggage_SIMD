@@ -1,11 +1,11 @@
 
 
-#include "vnrutil.h"
+#include "../include/vnrutil.h"
 #include <stdio.h>
 #include <string.h>
 
 
-#include "nrutil.h"
+#include "../include/nrutil.h"
 
 void copy_vui8matrix_vui8matrix(vuint8 **X, int i0, int i1, int j0, int j1, vuint8 **Y)
 {
