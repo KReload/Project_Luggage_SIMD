@@ -263,18 +263,24 @@ vuint8** fermeture_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 {
   vuint8** output;
 
-  output = dilatation_SSE3x3_elemVertical(M, nrl, nrh, ncl, nch);
-  output = dilatation_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
-  output = erosion_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
-  output = erosion_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
 
+  
+  
   //Elem structurant 5x5
   if(dim == 5) {
     output = dilatation_SSE3x3_elemVertical(M, nrl, nrh, ncl, nch);
     output = dilatation_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
+    output = dilatation_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
+    output = dilatation_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
     output = erosion_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
     output = erosion_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
-
+    output = erosion_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
+    output = erosion_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
+  } else {
+    output = dilatation_SSE3x3_elemVertical(M, nrl, nrh, ncl, nch);
+    output = dilatation_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
+    output = erosion_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
+    output = erosion_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
   }
 
   return output;
@@ -284,13 +290,17 @@ vuint8** ouverture_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
 {
   vuint8** output;
 	
-  output = erosion_SSE3x3_elemVertical(M, nrl, nrh, ncl, nch);
-  output = erosion_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
-  output = dilatation_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
-  output = dilatation_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
-
   //Elem structurant 5x5
   if(dim == 5) {
+    output = erosion_SSE3x3_elemVertical(M, nrl, nrh, ncl, nch);
+    output = erosion_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
+    output = erosion_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
+    output = erosion_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
+    output = dilatation_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
+    output = dilatation_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
+    output = dilatation_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
+    output = dilatation_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
+  } else {
     output = erosion_SSE3x3_elemVertical(M, nrl, nrh, ncl, nch);
     output = erosion_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
     output = dilatation_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);

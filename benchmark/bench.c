@@ -51,7 +51,7 @@ void benchDetectionMouvementSD()
   double cpuTimeTot = 0.0;
   double cpuTimeMorpho = 0.0;
   long nrl, nrh, ncl, nch;
-  int dim = 3;
+  int dim = 5;
   char filename0[255];
   char filename1[255];
   char filenameE[255];
