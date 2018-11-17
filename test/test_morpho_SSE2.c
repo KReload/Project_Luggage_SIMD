@@ -80,7 +80,7 @@ void test_dilatation_SSE()
 
 void test_erosion_SSE()
 {
-  printf("\nTesting erosion\n");
+  
   int checkTest = 1;   
   vuint8**img = vui8matrix(0, 10, 0, 10);
 
@@ -103,6 +103,7 @@ void test_erosion_SSE()
 
   //display_vui8matrix (img, 0, 10, 0, 10, "%d ", "IMG :");
   printf("===================================\n");
+  printf("\nTesting erosion\n");
   vuint8**M = erosion_SSE3x3_elemVertical(img, 0, 10, 0, 10);
   M = erosion_SSE3x3_elemHorizontal(M, 0, 10, 0, 10);
   //display_vui8matrix (M, 0, 10, 0, 10, "%d ", "IMG ERODE :");
