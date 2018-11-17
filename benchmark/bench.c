@@ -47,16 +47,15 @@ double calculMCC(float64** ROC)
 void benchDetectionMouvementSD()
 {
   clock_t startSD, endSD, startTot, endTot, startMorpho, endMorpho;
-  startTot = clock();
   double cpuTimeSD = 0.0;
   double cpuTimeTot = 0.0;
   double cpuTimeMorpho = 0.0;
   long nrl, nrh, ncl, nch;
   int dim = 3;
-  char* filename0 = (char*) malloc(sizeof(char) * FILENAMESIZE);
-  char* filename1 = (char*) malloc(sizeof(char) * FILENAMESIZE);
-  char* filenameE = (char*) malloc(sizeof(char) * (FILENAMESIZE+8));
-  char* filenameO = (char*) malloc(sizeof(char) * (FILENAMESIZE+8));
+  char filename0[255];
+  char filename1[255];
+  char filenameE[255];
+  char filenameO[255];
   uint8** I0;
   uint8** I1;
   uint8** M0 = LoadPGM_ui8matrix("../hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
@@ -73,24 +72,24 @@ void benchDetectionMouvementSD()
       I0 = LoadPGM_ui8matrix(filename0, &nrl, &nrh, &ncl, &nch);
       I1 = LoadPGM_ui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
 
+      startTot = clock();
       startSD = clock();
       sigmaDelta(I0, I1, M0, M1, V0, V1, O1, E1, nrl, nrh, ncl, nch);
       endSD = clock();
       cpuTimeSD += ((double) (endSD-startSD))/ CLOCKS_PER_SEC * 1000;
-
+      
       startMorpho = clock();
       E1 = ouverture(E1, nrl, nrh, ncl, nch, dim);
       E1 = fermeture(E1, nrl, nrh, ncl, nch, dim);
       E1 = ouverture(E1, nrl, nrh, ncl, nch, 3);
       E1 = fermeture(E1, nrl, nrh, ncl, nch, 3);
-
-      // E1 = erosion(E1,nrl,nrh,ncl,nch,3);
-
       endMorpho = clock();
+      endTot = clock();
       cpuTimeMorpho += ((double) (endMorpho-startMorpho))/CLOCKS_PER_SEC * 1000;
+      cpuTimeTot += ((double) (endTot-startTot))/CLOCKS_PER_SEC * 1000;
       
-      sprintf(filenameO,"../exe/hallSDO/hall%06dO.pgm",i);
-      sprintf(filenameE,"../exe/hallSDE/hall%06dE.pgm",i+1);
+      sprintf(filenameO,"../output/hallScalar/SDO/hall%06dO.pgm",i);
+      sprintf(filenameE,"../output/hallScalar/SDE/hall%06dE.pgm",i+1);
       
       SavePGM_ui8matrix(O1, nrl, nrh, ncl, nch, filenameO);
       SavePGM_ui8matrix(E1, nrl, nrh, ncl, nch, filenameE);
@@ -98,7 +97,10 @@ void benchDetectionMouvementSD()
       copy_ui8matrix_ui8matrix (V1, nrl, nrh, ncl, nch, V0);
       copy_ui8matrix_ui8matrix (M1, nrl, nrh, ncl, nch, M0);
     }
-
+  printf("Temps passé dans l'algo SD : %f ms\n", cpuTimeSD);
+  printf("Temps passé dans les algos de morphologies : %f ms\n", cpuTimeMorpho);
+  printf("Temps total : %f ms\n", cpuTimeTot);
+  
   // free_ui8matrix(O1, nrl+2, nrh+2, ncl+2, nch+2);
   // free_ui8matrix(E1, nrl+2, nrh+2, ncl+2, nch+2);
   free_ui8matrix(I0, nrl, nrh, ncl, nch);
@@ -107,11 +109,6 @@ void benchDetectionMouvementSD()
   free_ui8matrix(V1, nrl, nrh, ncl, nch);
   free_ui8matrix(M0, nrl, nrh, ncl, nch);
   free_ui8matrix(M1, nrl, nrh, ncl, nch);
-  endTot = clock();
-  cpuTimeTot = ((double) (endTot-startTot))/ CLOCKS_PER_SEC * 1000;
-  printf("Temps passé dans l'algo SD : %f ms\n", cpuTimeSD);
-  printf("Temps passé dans les algos de morphologies : %f ms\n", cpuTimeMorpho);
-  printf("Temps total : %f ms\n", cpuTimeTot);
 }
 
 void benchDetectionMouvementFD(uint8 theta)
@@ -122,10 +119,10 @@ void benchDetectionMouvementFD(uint8 theta)
   double cpuTimeMorpho = 0.0;
   long nrl, nrh, ncl, nch;
   int dim = 3;
-  char* filename0 = (char*) malloc(sizeof(char) * FILENAMESIZE);
-  char* filename1 = (char*) malloc(sizeof(char) * FILENAMESIZE);
-  char* filenameE = (char*) malloc(sizeof(char) * (FILENAMESIZE+8));
-  char* filenameO = (char*) malloc(sizeof(char) * (FILENAMESIZE+8));
+  char filename0[255];
+  char filename1[255];
+  char filenameE[255];
+  char filenameO[255];
   uint8** I0 = LoadPGM_ui8matrix("../hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
   uint8** I1;
   uint8** O = ui8matrix(nrl, nrh, ncl, nch);
@@ -145,20 +142,21 @@ void benchDetectionMouvementFD(uint8 theta)
       cpuTimeFD += ((double) (endFD-startFD))/ CLOCKS_PER_SEC * 1000;
 
       startMorpho = clock();
-      // E = ouverture(E, nrl, nrh, ncl, nch, dim);
-      // E = fermeture(E, nrl, nrh, ncl, nch, dim);
+      E = ouverture(E, nrl, nrh, ncl, nch, dim);
+      E = fermeture(E, nrl, nrh, ncl, nch, dim);
       endMorpho = clock();
       cpuTimeMorpho += ((double) (endMorpho-startMorpho))/ CLOCKS_PER_SEC * 1000;
       endTot = clock();
       cpuTimeTot += ((double) (endTot-startTot))/ CLOCKS_PER_SEC * 1000;
       
-      sprintf(filenameO,"../exe/hallFDO/hall%06dO.pgm",i);
-      sprintf(filenameE,"../exe/hallFDE/hall%06dE.pgm",i+1);
+      sprintf(filenameO,"../output/hallScalar/FDO/hall%06dO.pgm",i);
+      sprintf(filenameE,"../output/hallScalar/FDE/hall%06dE.pgm",i+1);
       
       SavePGM_ui8matrix(O, nrl, nrh, ncl, nch, filenameO);
       SavePGM_ui8matrix(E, nrl, nrh, ncl, nch, filenameE);
       
     }
+  
   //free_ui8matrix(O, nrl, nrh, ncl, nch);
   //free_ui8matrix(E, nrl, nrh, ncl, nch);
   free_ui8matrix(I0, nrl, nrh, ncl, nch);
@@ -181,13 +179,13 @@ void benchQualitatifFD()
   ROC[1][1] = 0.0;
   uint8** IVT;
   uint8** IFD;
-  char* filename0 = (char*) malloc(sizeof(char) * 19);
-  char* filename1 = (char*) malloc(sizeof(char) * 30);
+  char filename0[255];
+  char filename1[255];
   double mcc = 0.0;
   for(int i = 32; i < 92; i+=20)
     {
       sprintf(filename0,"./IVT/hall%d_VT.pgm",i);
-      sprintf(filename1,"../exe/hallFDE/hall0000%dE.pgm",i);
+      sprintf(filename1,"../output/hallScalar/FDE/hall%06dE.pgm",i);
 
       IVT = LoadPGM_ui8matrix(filename0,&nrl,&nrh,&ncl,&nch);
       IFD = LoadPGM_ui8matrix(filename1,&nrl,&nrh,&ncl,&nch);
@@ -198,7 +196,6 @@ void benchQualitatifFD()
   mcc = calculMCC(ROC);
   display_f64matrix(ROC,0,1,0,1,"%f ","Matrice ROC : ");
   printf("\nMCC = %f\n",mcc); 
-
   free_ui8matrix(IVT, nrl, nrh, ncl, nch);
   free_ui8matrix(IFD, nrl, nrh, ncl, nch);
   free_f64matrix(ROC, 0, 2, 0, 2);
@@ -215,13 +212,12 @@ void benchQualitatifSD()
   ROC[1][1] = 0.0;
   uint8** IVT;
   uint8** ISD;
-  char* filename0 = (char*) malloc(sizeof(char) * 20);
-  char* filename1 = (char*) malloc(sizeof(char) * 30);
-
+  char filename0[255];
+  char filename1[255];
   for(int i = 32; i < 92; i+=20)
     {
       sprintf(filename0,"./IVT/hall%d_VT.pgm",i);
-      sprintf(filename1,"../exe/hallSDE/hall0000%dE.pgm",i);
+      sprintf(filename1,"../output/hallScalar/SDE/hall%06dE.pgm",i);
 
       IVT = LoadPGM_ui8matrix(filename0,&nrl,&nrh,&ncl,&nch);
       ISD = LoadPGM_ui8matrix(filename1,&nrl,&nrh,&ncl,&nch);
@@ -243,11 +239,11 @@ int main(int argc, char const *argv[])
   int theta = 10;
   printf("+==========================+\nFrame Difference :\n");
   benchDetectionMouvementFD(theta);
-  //benchQualitatifFD();
+  benchQualitatifFD();
   
   printf("+==========================+\nSigma Delta :\n");
   benchDetectionMouvementSD();
-  //benchQualitatifSD();
+  benchQualitatifSD();
 
   
   /*
