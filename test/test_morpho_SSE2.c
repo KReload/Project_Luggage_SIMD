@@ -1,13 +1,5 @@
 #include "../include/morpho_SSE2.h"
-
-void printResultTest(char*desctest, int test) {
-  printf("\t\t%s: ",desctest);
-  if(test){
-    printf("\u2714\n");
-  } else {
-    printf("\u274c\n");
-  }
-}
+#include "../include/testutil.h"
 
 void test_dilatation_SSE()
 {

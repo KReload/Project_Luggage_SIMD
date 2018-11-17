@@ -11,13 +11,13 @@ all: nrutil.o vnrutil.o morpho.o mouvement.o simdutil.o morpho_SSE2.o mouvement_
 	gcc mouvement_FD.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o ./exe/mouvement_FD
 	gcc mouvement_SD.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o ./exe/mouvement_SD
 
-test: nrutil.o vnrutil.o simdutil.o morpho.o mouvement.o mouvement_SSE2.o morpho_SSE2.o
-	gcc test/testOpen.c ./obj/nrutil.o -o test/testOpen
+test: nrutil.o vnrutil.o simdutil.o morpho.o mouvement.o mouvement_SSE2.o morpho_SSE2.o testutil.o
 	gcc test/testMorpho.c ./obj/nrutil.o ./obj/morpho.o -o test/testMorpho
 	gcc test/testfd.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o test/testfd
 	gcc test/testsd.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o test/testsd
-	gcc test/testsd_simd.c ./obj/vnrutil.o ./obj/simdutil.o ./obj/nrutil.o ./obj/mouvement_SSE2.o ./obj/morpho_SSE2.o -Wall -o test/testsd_simd
-	gcc test/testMorpho_SSE2.c ./obj/vnrutil.o ./obj/simdutil.o ./obj/nrutil.o ./obj/mouvement_SSE2.o ./obj/morpho_SSE2.o -Wall -o test/testMorpho_SSE2
+	gcc test/test_macros_SSE2.c ./obj/vnrutil.o ./obj/simdutil.o ./obj/nrutil.o ./obj/mouvement_SSE2.o ./obj/morpho_SSE2.o ./obj/testutil.o -Wall -o test/test_macros_SSE2
+	gcc test/test_morpho_SSE2.c ./obj/vnrutil.o ./obj/simdutil.o ./obj/nrutil.o ./obj/mouvement_SSE2.o ./obj/morpho_SSE2.o -Wall -o test/test_morpho_SSE2
+	gcc test/test_mouvement_SSE2.c ./obj/vnrutil.o ./obj/simdutil.o ./obj/nrutil.o ./obj/testutil.o -Wall -o test/test_mouvement_SSE2
 
 mouvement_SSE2.o:
 	gcc -c ./mouvement_SSE2.c -o ./obj/mouvement_SSE2.o
@@ -36,6 +36,9 @@ mouvement.o:
 
 simdutil.o:
 	gcc -c ./include/simdutil.c -o ./obj/simdutil.o
+
+testutil.o:
+	gcc -c ./include/testutil.c -o ./obj/testutil.o
 
 validation.o:
 	gcc -c ./include/validation.c -o ./obj/validation.o $(LIB)

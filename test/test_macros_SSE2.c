@@ -15,16 +15,10 @@
 #include "../include/mouvement_SSE2.h"
 #include "../include/morpho_SSE2.h"
 
-#define N_OCTET 16
+#include "../include/testutil.h"
 
-void printResultTest(char*desctest, int test) {
-    printf("\t\t%s: ",desctest);
-    if(test){
-        printf("\u2714\n");
-    } else {
-        printf("\u274c\n");
-    }
-}
+
+
 
 //Test sub_abs_epi8 takes only unsigned
 void test_sub_abs() {
@@ -438,7 +432,6 @@ int main(){
     test_shift_right_add_prec_si128();
     test_shift_left_add_next_si128();
     //test_frame_difference();
-    //test_mullo_epi8();
 
     //test_mm_cplt_8to16();
     
