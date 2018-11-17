@@ -269,7 +269,7 @@ vuint8** fermeture_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
   output = erosion_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
 
   //Elem structurant 5x5
-  if(dim/2 == 2) {
+  if(dim == 5) {
     output = dilatation_SSE3x3_elemVertical(M, nrl, nrh, ncl, nch);
     output = dilatation_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
     output = erosion_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
@@ -290,7 +290,7 @@ vuint8** ouverture_SSE(vuint8** M, int nrl, int nrh, int ncl, int nch, int dim)
   output = dilatation_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
 
   //Elem structurant 5x5
-  if(dim/2 == 2) {
+  if(dim == 5) {
     output = erosion_SSE3x3_elemVertical(M, nrl, nrh, ncl, nch);
     output = erosion_SSE3x3_elemHorizontal(output, nrl, nrh, ncl, nch);
     output = dilatation_SSE3x3_elemVertical(output, nrl, nrh, ncl, nch);
