@@ -1,15 +1,11 @@
 
 
 #Makefile
-EXEC = ./test/testsd ./test/testMorpho ./test/testOpen ./test/testfd ./exe/mouvement_SD ./exe/mouvement_FD ./exe/mouvement_SSE2 ./validation/validation_FD ./validation/validation_SD ./benchmark/bench ./benchmark/bench_SSE2
+EXEC = ./test/testsd ./test/testMorpho ./test/testOpen ./test/testfd ./benchmark/bench ./benchmark/bench_SSE2
 HDIR = ./output/hallSSE/FDE/* ./output/hallSSE/FDO/* ./output/hallSSE/SDE/* ./output/hallSSE/SDO/* ./output/hallScalar/FDE/* ./output/hallScalar/FDO/* ./output/hallScalar/SDE/* ./output/hallScalar/SDO/*
 OBJ = ./obj/*.o
 OTHER = ./test/*.c~ ./test/*.pgm ./include/*.c~ ./include/*.h~ *.c~
 LIB = -lm
-
-all: nrutil.o vnrutil.o morpho.o mouvement.o simdutil.o morpho_SSE2.o mouvement_SSE2.o
-	gcc mouvement_FD.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o ./exe/mouvement_FD
-	gcc mouvement_SD.c ./obj/nrutil.o ./obj/morpho.o ./obj/mouvement.o -o ./exe/mouvement_SD
 
 test: nrutil.o vnrutil.o simdutil.o morpho.o mouvement.o mouvement_SSE2.o morpho_SSE2.o
 	gcc test/testOpen.c ./obj/nrutil.o -o test/testOpen
