@@ -83,6 +83,9 @@ void benchDetectionMouvementSD()
       E1 = fermeture(E1, nrl, nrh, ncl, nch, dim);
       E1 = ouverture(E1, nrl, nrh, ncl, nch, 3);
       E1 = fermeture(E1, nrl, nrh, ncl, nch, 3);
+
+      // E1 = erosion(E1,nrl,nrh,ncl,nch,3);
+
       endMorpho = clock();
       cpuTimeMorpho += ((double) (endMorpho-startMorpho))/CLOCKS_PER_SEC * 1000;
       
