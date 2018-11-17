@@ -404,36 +404,14 @@ void test_shift_left_add_next_si128() {
 
 }
 
-void test_mm_cplt_8to16(){
-    vuint8 a = init_vuint8(255);
-    vuint8 b = init_vuint8(1);
-    vuint16 c;
-    vuint16 hi, lo;
-
-    display_vuint8(a,"%d ", "a: ");
-    printf("\n");
-    display_vuint16(_mm_unpackhi_epi8(a,init_vuint8(0)),"%d ", "unpack hi: ");
-    printf("\n");
-    display_vuint16(_mm_unpacklo_epi8(a,init_vuint8(0)),"%d ", "unpack lo: ");
-    printf("\n");
-
-    //c = _mm_packs_epi16(_mm_cmplt_epi16(init_vuint16(256),_mm_unpackhi_epi8(a,init_vuint8(0))),_mm_cmplt_epi16(init_vuint16(254),_mm_unpacklo_epi8(a,init_vuint8(0))));
-
-
-    c = _mm_cmpgt_epu8to16(a,init_vuint16(254), init_vuint16(256));
-    display_vuint8(c,"%d ", "PACK: ");
-}
 
 int main(){
     test_sub_abs();
     test_sel_si128();
     test_lt();
-    //test_dilatation();
     test_shift_right_add_prec_si128();
     test_shift_left_add_next_si128();
-    //test_frame_difference();
 
-    //test_mm_cplt_8to16();
     
     return 0;
 }

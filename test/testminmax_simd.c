@@ -8,10 +8,6 @@
 #define MIN_SSE(a,b) (sel_si128((vuint8)_mm_cmplt_epi8((__m128i)a,(__m128i)b),a,b))
 
 
-vuint8 sel_si128(vuint8 vcontrole,vuint8 a, vuint8 b){
-  return _mm_or_si128(_mm_and_si128((__m128i)vcontrole,(__m128i)a),_mm_andnot_si128((__m128i)vcontrole,(__m128i)b));
-}
-
 
 int main(void)
 {
