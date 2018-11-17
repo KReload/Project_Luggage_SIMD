@@ -192,7 +192,7 @@ void benchQualitatifFDSSE2()
   char filename0[255];
   char filename1[255];
   double mcc = 0.0;
-  for(int i = 32; i < 92; i+=20)
+  for(int i = 12; i < NIMAGES; i+=20)
     {
       sprintf(filename0,"./IVT/hall%d_VT.pgm",i);
       sprintf(filename1,"../output/hallSSE/FDE/hall%06dE.pgm",i);
@@ -225,7 +225,7 @@ void benchQualitatifSDSSE2()
   uint8** ISD;
   char filename0[255];
   char filename1[255];
-  for(int i = 32; i < 92; i+=20)
+  for(int i = 12; i < NIMAGES; i+=20)
     {
       sprintf(filename0,"./IVT/hall%d_VT.pgm",i);
       sprintf(filename1,"../output/hallSSE/SDE/hall%06dE.pgm",i);
