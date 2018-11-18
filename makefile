@@ -14,6 +14,7 @@ test: nrutil.o vnrutil.o simdutil.o morpho.o mouvement.o mouvement_SSE2.o morpho
 	gcc test/test_morpho_SSE2.c ./obj/vnrutil.o ./obj/simdutil.o ./obj/nrutil.o ./obj/mouvement_SSE2.o ./obj/morpho_SSE2.o ./obj/testutil.o -Wall -o test/test_morpho_SSE2
 	gcc test/test_mouvement_SSE2.c ./obj/vnrutil.o ./obj/simdutil.o ./obj/nrutil.o ./obj/testutil.o -Wall -o test/test_mouvement_SSE2
 	gcc test/test_mouvement.c ./obj/nrutil.o ./obj/testutil.o ./obj/mouvement.o -Wall -o test/test_mouvement
+	gcc ./test/test_IVT.c ./obj/nrutil.o -o ./test/test_IVT
 
 mouvement_SSE2.o:
 	gcc -c ./src/mouvement_SSE2.c -o ./obj/mouvement_SSE2.o
