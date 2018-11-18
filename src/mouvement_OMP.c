@@ -2,6 +2,7 @@
 
 void frameDifference(uint8** I0, uint8** I1,uint8** O, uint8** E, long nrl, long nrh, long ncl, long nch, uint8 theta)
 {
+#pragma omp parallel for schedule(dynamic, CHUNK)
   for(int i = 0; i < nrh; i++)
     {
       for(int j = 0; j < nch; j++)
@@ -18,6 +19,7 @@ void frameDifference(uint8** I0, uint8** I1,uint8** O, uint8** E, long nrl, long
 
 void sigmaDelta(uint8** I0, uint8** I1, uint8** M0, uint8** M1, uint8** V0, uint8** V1, uint8** O1, uint8** E1, long nrl, long nrh, long ncl, long nch)
 {
+#pragma omp parallel for schedule(dynamic, CHUNK)
   for(int i = 0; i < nrh; i++)
     {
       for(int j = 0; j < nch; j++)

@@ -1,4 +1,4 @@
-#include "../include/bench_OMP.h"
+#include "../include/bench_OMPxSSE2.h"
 
 void calculMatriceROC(float64** ROC, uint8** img, uint8** img_vt, long nrl, long nrh, long ncl, long nch)
 {
@@ -51,26 +51,26 @@ void benchDetectionMouvementSD()
   double cpuTimeTot = 0.0;
   double cpuTimeMorpho = 0.0;
   long nrl, nrh, ncl, nch;
-  int dim = 5;
+  int dim = 3;
   char filename0[255];
   char filename1[255];
   char filenameE[255];
   char filenameO[255];
-  uint8** I0;
-  uint8** I1;
-  uint8** M0 = LoadPGM_ui8matrix("../hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
-  uint8** O1 = ui8matrix(nrl, nrh, ncl, nch);
-  uint8** E1 = ui8matrix(nrl, nrh, ncl, nch);
-  uint8** M1 = ui8matrix(nrl, nrh, ncl, nch);
-  uint8** V0 = ui8matrix(nrl, nrh, ncl, nch);
-  uint8** V1 = ui8matrix(nrl, nrh, ncl, nch);
+  vuint8** I0;
+  vuint8** I1;
+  vuint8** M0 = LoadPGM_vui8matrix("../hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
+  vuint8** O1 = vui8matrix(nrl, nrh, ncl, nch);
+  vuint8** E1 = vui8matrix(nrl, nrh, ncl, nch);
+  vuint8** M1 = vui8matrix(nrl, nrh, ncl, nch);
+  vuint8** V0 = vui8matrix(nrl, nrh, ncl, nch);
+  vuint8** V1 = vui8matrix(nrl, nrh, ncl, nch);
   
   for(int i = 0; i < NIMAGES - 1; i++)
     {
       sprintf(filename0,"../hall/hall%06d.pgm",i);
       sprintf(filename1,"../hall/hall%06d.pgm",i+1);
-      I0 = LoadPGM_ui8matrix(filename0, &nrl, &nrh, &ncl, &nch);
-      I1 = LoadPGM_ui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
+      I0 = LoadPGM_vui8matrix(filename0, &nrl, &nrh, &ncl, &nch);
+      I1 = LoadPGM_vui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
 
       clock_gettime(CLOCK_MONOTONIC, &startTot);
       clock_gettime(CLOCK_MONOTONIC, &startSD);
@@ -80,10 +80,10 @@ void benchDetectionMouvementSD()
       cpuTimeSD += (double) (endSD.tv_nsec - startSD.tv_nsec)/ 1000000000.0;
       
       clock_gettime(CLOCK_MONOTONIC, &startMorpho);
-      E1 = ouverture(E1, nrl, nrh, ncl, nch, dim);
-      E1 = fermeture(E1, nrl, nrh, ncl, nch, dim);
-      E1 = ouverture(E1, nrl, nrh, ncl, nch, 5);
-      E1 = fermeture(E1, nrl, nrh, ncl, nch, 5);
+      E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, dim);
+      E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, dim);
+      E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, 5);
+      E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, 5);
       clock_gettime(CLOCK_MONOTONIC, &endMorpho);
       clock_gettime(CLOCK_MONOTONIC, &endTot);
 
@@ -92,27 +92,27 @@ void benchDetectionMouvementSD()
       cpuTimeTot += (double) (endTot.tv_sec - startTot.tv_sec);
       cpuTimeTot += (double) (endTot.tv_nsec - startTot.tv_nsec)/ 1000000000.0;
          
-      sprintf(filenameO,"../output/hallOMP/SDO/hall%06dO.pgm",i);
-      sprintf(filenameE,"../output/hallOMP/SDE/hall%06dE.pgm",i+1);
+      sprintf(filenameO,"../output/hallOMPxSSE2/SDO/hall%06dO.pgm",i);
+      sprintf(filenameE,"../output/hallOMPxSSE2/SDE/hall%06dE.pgm",i+1);
       
-      SavePGM_ui8matrix(O1, nrl, nrh, ncl, nch, filenameO);
-      SavePGM_ui8matrix(E1, nrl, nrh, ncl, nch, filenameE);
+      SavePGM_vui8matrix(O1, nrl, nrh, ncl, nch, filenameO);
+      SavePGM_vui8matrix(E1, nrl, nrh, ncl, nch, filenameE);
 
-      copy_ui8matrix_ui8matrix (V1, nrl, nrh, ncl, nch, V0);
-      copy_ui8matrix_ui8matrix (M1, nrl, nrh, ncl, nch, M0);
+      copy_vui8matrix_vui8matrix (V1, nrl, nrh, ncl, nch, V0);
+      copy_vui8matrix_vui8matrix (M1, nrl, nrh, ncl, nch, M0);
     }
   printf("Temps passé dans l'algo SD : %f ms\n", cpuTimeSD*1000);
   printf("Temps passé dans les algos de morphologies : %f ms\n", cpuTimeMorpho*1000);
   printf("Temps total : %f ms\n", cpuTimeTot*1000);
   
-  // free_ui8matrix(O1, nrl+2, nrh+2, ncl+2, nch+2);
-  // free_ui8matrix(E1, nrl+2, nrh+2, ncl+2, nch+2);
-  free_ui8matrix(I0, nrl, nrh, ncl, nch);
-  free_ui8matrix(I1, nrl, nrh, ncl, nch);
-  free_ui8matrix(V0, nrl, nrh, ncl, nch);
-  free_ui8matrix(V1, nrl, nrh, ncl, nch);
-  free_ui8matrix(M0, nrl, nrh, ncl, nch);
-  free_ui8matrix(M1, nrl, nrh, ncl, nch);
+  free_vui8matrix(O1, nrl, nrh, ncl, nch);
+  free_vui8matrix(E1, nrl, nrh, ncl, nch);
+  free_vui8matrix(I0, nrl, nrh, ncl, nch);
+  free_vui8matrix(I1, nrl, nrh, ncl, nch);
+  free_vui8matrix(V0, nrl, nrh, ncl, nch);
+  free_vui8matrix(V1, nrl, nrh, ncl, nch);
+  free_vui8matrix(M0, nrl, nrh, ncl, nch);
+  free_vui8matrix(M1, nrl, nrh, ncl, nch);
 }
 
 void benchDetectionMouvementFD(uint8 theta)
@@ -127,28 +127,28 @@ void benchDetectionMouvementFD(uint8 theta)
   char filename1[255];
   char filenameE[255];
   char filenameO[255];
-  uint8** I0 = LoadPGM_ui8matrix("../hall/hall000000.pgm",&nrl,&nrh,&ncl,&nch);
-  uint8** I1;
-  uint8** O = ui8matrix(nrl, nrh, ncl, nch);
-  uint8** E = ui8matrix(nrl, nrh, ncl, nch);
+  vuint8** I0 = LoadPGM_vui8matrix("../hall/hall000000.pgm", &nrl, &nrh, &ncl, &nch);
+  vuint8** I1;
+  vuint8** O = vui8matrix(nrl, nrh, ncl, nch);
+  vuint8** E = vui8matrix(nrl, nrh, ncl, nch);
   
   for(int i = 0; i < NIMAGES - 1; i++)
     {
       sprintf(filename0,"../hall/hall%06d.pgm",i);
       sprintf(filename1,"../hall/hall%06d.pgm",i+1);
-      I0 = LoadPGM_ui8matrix(filename0, &nrl, &nrh, &ncl, &nch);
-      I1 = LoadPGM_ui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
+      I0 = LoadPGM_vui8matrix(filename0, &nrl, &nrh, &ncl, &nch);
+      I1 = LoadPGM_vui8matrix(filename1, &nrl, &nrh, &ncl, &nch);
 
       clock_gettime(CLOCK_MONOTONIC, &startTot);
       clock_gettime(CLOCK_MONOTONIC, &startFD);
-      frameDifference(I0, I1, O, E, nrl, nrh, ncl, nch, theta);
+      frameDifference(I0, I1, O, E, nrl, nrh, ncl, nch);
       clock_gettime(CLOCK_MONOTONIC, &endFD);
       cpuTimeFD += (double) (endFD.tv_sec - startFD.tv_sec);
       cpuTimeFD += (double) (endFD.tv_nsec - startFD.tv_nsec)/ 1000000000.0;
       
       clock_gettime(CLOCK_MONOTONIC, &startMorpho);
-      E = ouverture(E, nrl, nrh, ncl, nch, dim);
-      E = fermeture(E, nrl, nrh, ncl, nch, dim);
+      E = ouverture_SSE(E, nrl, nrh, ncl, nch, dim);
+      E = fermeture_SSE(E, nrl, nrh, ncl, nch, dim);
       clock_gettime(CLOCK_MONOTONIC, &endMorpho);
       clock_gettime(CLOCK_MONOTONIC, &endTot);
 
@@ -157,22 +157,22 @@ void benchDetectionMouvementFD(uint8 theta)
       cpuTimeTot += (double) (endTot.tv_sec - startTot.tv_sec);
       cpuTimeTot += (double) (endTot.tv_nsec - startTot.tv_nsec)/ 1000000000.0;
       
-      sprintf(filenameO,"../output/hallOMP/FDO/hall%06dO.pgm",i);
-      sprintf(filenameE,"../output/hallOMP/FDE/hall%06dE.pgm",i+1);
+      sprintf(filenameO,"../output/hallOMPxSSE2/FDO/hall%06dO.pgm",i);
+      sprintf(filenameE,"../output/hallOMPxSSE2/FDE/hall%06dE.pgm",i+1);
       
-      SavePGM_ui8matrix(O, nrl, nrh, ncl, nch, filenameO);
-      SavePGM_ui8matrix(E, nrl, nrh, ncl, nch, filenameE);
-      
+     SavePGM_vui8matrix(O, nrl, nrh, ncl, nch, filenameO);
+     SavePGM_vui8matrix(E, nrl, nrh, ncl, nch, filenameE);
+           
     }
-  
-  //free_ui8matrix(O, nrl, nrh, ncl, nch);
-  //free_ui8matrix(E, nrl, nrh, ncl, nch);
-  free_ui8matrix(I0, nrl, nrh, ncl, nch);
-  free_ui8matrix(I1, nrl, nrh, ncl, nch);
 
   printf("Temps passé dans l'algo FD : %f ms\n", cpuTimeFD*1000);
   printf("Temps passé dans les algos de morphologies : %f ms\n", cpuTimeMorpho*1000);
   printf("Temps total : %f ms\n", cpuTimeTot*1000);
+
+  free_vui8matrix(I0, nrl, nrh, ncl, nch);
+  free_vui8matrix(I1, nrl, nrh, ncl, nch);
+  free_vui8matrix(O, nrl, nrh, ncl, nch);
+  free_vui8matrix(E, nrl, nrh, ncl, nch);
 }
 
 
@@ -193,7 +193,7 @@ void benchQualitatifFD()
   for(int i = 12; i < NIMAGES; i+=20)
     {
       sprintf(filename0,"../IVT/hall%d_VT.pgm",i);
-      sprintf(filename1,"../output/hallOMP/FDE/hall%06dE.pgm",i);
+      sprintf(filename1,"../output/hallOMPxSSE2/FDE/hall%06dE.pgm",i);
 
       IVT = LoadPGM_ui8matrix(filename0,&nrl,&nrh,&ncl,&nch);
       IFD = LoadPGM_ui8matrix(filename1,&nrl,&nrh,&ncl,&nch);
@@ -225,7 +225,7 @@ void benchQualitatifSD()
   for(int i = 12; i < NIMAGES; i+=20)
     {
       sprintf(filename0,"../IVT/hall%d_VT.pgm",i);
-      sprintf(filename1,"../output/hallOMP/SDE/hall%06dE.pgm",i);
+      sprintf(filename1,"../output/hallOMPxSSE2/SDE/hall%06dE.pgm",i);
 
       IVT = LoadPGM_ui8matrix(filename0,&nrl,&nrh,&ncl,&nch);
       ISD = LoadPGM_ui8matrix(filename1,&nrl,&nrh,&ncl,&nch);

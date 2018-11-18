@@ -113,7 +113,7 @@ void benchDetectionMouvementSDSSE2()
   double cpuTimeMorpho = 0.0;
 
   long nrl, nrh, ncl, nch;
-  int dim = 5;
+  int dim = 3;
   char filename0[255];
   char filename1[255];
   char filenameE[255];
@@ -144,8 +144,8 @@ void benchDetectionMouvementSDSSE2()
       startMorpho = clock();
       E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, dim);
       E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, dim);
-      E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, dim);
-      E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, dim);
+      E1 = ouverture_SSE(E1, nrl, nrh, ncl, nch, 5);
+      E1 = fermeture_SSE(E1, nrl, nrh, ncl, nch, 5);
       endMorpho = clock();
       endTot = clock();
       cpuTimeMorpho += ((double) (endMorpho-startMorpho))/CLOCKS_PER_SEC * 1000;

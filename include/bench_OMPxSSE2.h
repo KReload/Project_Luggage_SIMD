@@ -1,5 +1,6 @@
 #include "morpho_OMPxSSE2.h"
 #include "mouvement_OMPxSSE2.h"
+#include "nrutil.h"
 #include <math.h>
 
 #include <x86intrin.h>
@@ -7,6 +8,7 @@
 #include <time.h>
 #define NITER 2
 #define NRUN 5
+#define NIMAGES 300
 
 /*
 #define CHRONO(X,t)                         \                    

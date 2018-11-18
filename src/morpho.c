@@ -17,15 +17,20 @@ uint8** dilatation(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
     {
       for(int j = 0; j < nch; j++)
 	{
-	  for(int k = i-r; k < i+(r+1); k++)
+	  if(dim == 3)
 	    {
-	      for(int p = j-r; p < j+(r+1); p++)
-		{
-		  max = MAX(tmp[k][p],max);
-		}
+	      output[i][j] = tmp[i][j-1] | tmp[i][j] | tmp[i][j+1] |
+		tmp[i-1][j-1] | tmp[i-1][j] | tmp[i-1][j+1] |
+		tmp[i+1][j-1] | tmp[i+1][j] | tmp[i+1][j+1];
 	    }
-	  output[i][j] = max;
-	  max = 0;
+	  else if(dim == 5)
+	    {
+	      output[i][j] = tmp[i-2][j-2] | tmp[i-2][j-1] | tmp[i-2][j] | tmp[i-2][j+1] | tmp[i-2][j+2] |
+		tmp[i-1][j-2] | tmp[i-1][j-1] | tmp[i-1][j] | tmp[i-1][j+1] | tmp[i-1][j+2] |
+		tmp[i][j-2] | tmp[i][j-1] | tmp[i][j] | tmp[i][j+1] | tmp[i][j+2] |
+		tmp[i+1][j-2] | tmp[i+1][j-1] | tmp[i+1][j] | tmp[i+1][j+1] | tmp[i+1][j+2] |
+		tmp[i+2][j-2] | tmp[i+2][j-1] | tmp[i+2][j] | tmp[i+2][j+1] | tmp[i+2][j+2];
+	    }
 	}
     }
   
@@ -47,15 +52,20 @@ uint8** erosion(uint8** M, int nrl, int nrh, int ncl, int nch, int dim)
     {
       for(int j = 0; j < nch; j++)
 	{
-	  for(int k = i-r; k < i+(r+1); k++)
+	  if(dim == 3)
 	    {
-	      for(int p = j-r; p < j+(r+1); p++)
-		{
-		  min = MIN(tmp[k][p],min);
-		}
+	      output[i][j] = tmp[i][j-1] & tmp[i][j] & tmp[i][j+1] &
+		tmp[i-1][j-1] & tmp[i-1][j] & tmp[i-1][j+1] &
+		tmp[i+1][j-1] & tmp[i+1][j] & tmp[i+1][j+1];
 	    }
-	  output[i][j] = min;
-	  min = 255;
+	  else if(dim == 5)
+	    {
+	      output[i][j] = tmp[i-2][j-2] & tmp[i-2][j-1] & tmp[i-2][j] & tmp[i-2][j+1] & tmp[i-2][j+2] &
+		tmp[i-1][j-2] & tmp[i-1][j-1] & tmp[i-1][j] & tmp[i-1][j+1] & tmp[i-1][j+2] &
+		tmp[i][j-2] & tmp[i][j-1] & tmp[i][j] & tmp[i][j+1] & tmp[i][j+2] &
+		tmp[i+1][j-2] & tmp[i+1][j-1] & tmp[i+1][j] & tmp[i+1][j+1] & tmp[i+1][j+2] &
+		tmp[i+2][j-2] & tmp[i+2][j-1] & tmp[i+2][j] & tmp[i+2][j+1] & tmp[i+2][j+2];
+	    }
 	}
     }
 

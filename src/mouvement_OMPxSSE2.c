@@ -1,6 +1,6 @@
 
 
-#include "../include/mouvement_SSE2.h"
+#include "../include/mouvement_OMPxSSE2.h"
 
 #define FILENAMESIZE 40
 #define NIMAGES 300
@@ -23,7 +23,7 @@ void** frameDifference(vuint8** I0, vuint8** I1, vuint8**O, vuint8**E, long nrl,
   vuint8 low = init_vuint8(0);
   vuint8 high = init_vuint8(255);
   vuint8 c,d,ab,ba;
-  
+#pragma omp parallel for schedule(dynamic, CHUNK) private(INow,IPrec,tempO,c,d)
   for(int i = 0; i < nrh; i++)
     {
       for(int j = 0; j < nch; j++)
@@ -56,7 +56,7 @@ vuint8** sigmaDelta(vuint8** I0, vuint8** I1, vuint8** M0, vuint8** M1, vuint8**
 
 
   vuint8 c,d,a,b,k,l;
-  
+#pragma omp parallel for schedule(dynamic, CHUNK) private(NmulOt,MNow, INow, VNow,MPrec, IPrec, VPrec, ONow,c,d,a,b,k,l)
   for(int i = 0; i < nrh; i++)
     {
       for(int j = 0; j < nch; j++)

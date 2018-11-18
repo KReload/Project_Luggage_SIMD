@@ -1,7 +1,8 @@
-#include "../include/morpho_SSE2.h"
+#include "../include/morpho_OMPxSSE2.h"
 
 //Effectue une dilatation SSE3x3 element vertical en O(r*c*s)
 vuint8** dilatation_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, int nch) {
+  int i,j;
   vuint8** output = vui8matrix(nrl, nrh, ncl, nch);
 
   vuint8 elemStructa; //Premier pixel de l'élément structurant
@@ -12,11 +13,12 @@ vuint8** dilatation_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, i
 
   //Step 1: Element structurant vertical 
   //Step 1.1: Prologue
-  for(int j=0;j<nch;j++) {
+#pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructc,temp)
+  for(j=0;j<nch;j++) {
     elemStructb = _mm_load_si128(&M[0][j]);
     elemStructc = _mm_load_si128(&M[1][j]);
 	
-	  temp = _mm_or_si128(elemStructb, elemStructc);
+    temp = _mm_or_si128(elemStructb, elemStructc);
 
     //Sauvegarde de l'opération dans la sortie
     _mm_store_si128(&output[0][j],temp);
@@ -24,9 +26,10 @@ vuint8** dilatation_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, i
 
 	
   //Step 1.2: Corps de boucle
-  for(int i = 1; i < nrh-1; i++)
+#pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructc,elemStructa,temp,j)
+  for(i = 1; i < nrh-1; i++)
     {
-      for(int j = 0; j < nch; j++) {
+      for(j = 0; j < nch; j++) {
 
         elemStructa = _mm_load_si128(&M[i-1][j]);
         elemStructb = _mm_load_si128(&M[i+0][j]);
@@ -39,12 +42,12 @@ vuint8** dilatation_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, i
     }
 
   //Step 1.3: Epilogue de boucle
-
-  for(int j=0;j<nch;j++) {
+  #pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructa)
+  for(j=0;j<nch;j++) {
     elemStructa = _mm_load_si128(&M[nrh-2][j]);
     elemStructb = _mm_load_si128(&M[nrh-1][j]);
 
-	  temp = _mm_or_si128(elemStructa, elemStructb);
+    temp = _mm_or_si128(elemStructa, elemStructb);
 
     //Sauvegarde de l'opération dans la sortie
     _mm_store_si128(&output[nrh-1][j],temp);
@@ -55,6 +58,7 @@ vuint8** dilatation_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, i
 
 //Effectue une dilatation SSE3x3 element horizontal en O(r*c*s)
 vuint8** dilatation_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl, int nch) {
+  int i,j;
   vuint8** output = vui8matrix(nrl, nrh, ncl, nch);
 
   vuint8 elemStructa; //Premier pixel de l'élément structurant
@@ -66,7 +70,8 @@ vuint8** dilatation_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl,
   vuint8 resToStore;
   //Step 1: Element structurant vertical 
   //Step 1.1: Prologue
-  for(int i=0;i<nrh;i++) {
+#pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructc,resToStore)
+  for(i=0;i<nrh;i++) {
     elemStructb = _mm_load_si128(&M[i][0]);
     elemStructc = _mm_load_si128(&M[i][1]);
 
@@ -75,7 +80,7 @@ vuint8** dilatation_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl,
     //resToStore = _mm_or_si128((__m128i)_mm_slli_si128((__m128i),1),resToStore);
     resToStore = shift_left_add_next_si128(elemStructb,elemStructc,1);
     resToStore = _mm_or_si128(_mm_slli_si128(elemStructb,1),resToStore);
-	  resToStore = _mm_or_si128(resToStore,elemStructb);
+    resToStore = _mm_or_si128(resToStore,elemStructb);
 
     //Sauvegarde de l'opération dans la sortie
     _mm_store_si128(&output[i][0],resToStore);
@@ -83,9 +88,10 @@ vuint8** dilatation_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl,
 
 	
   //Step 1.2: Corps de boucle
-  for(int i = 0; i < nrh; i++)
+#pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructc,elemStructa,temp,resToStore,j)
+  for(i = 0; i < nrh; i++)
     {
-      for(int j = 1; j < (nch-1); j++) {
+      for(j = 1; j < (nch-1); j++) {
         elemStructa = _mm_load_si128(&M[i][j-1]);
         elemStructb = _mm_load_si128(&M[i][j+0]);
         elemStructc = _mm_load_si128(&M[i][j+1]);
@@ -111,8 +117,8 @@ vuint8** dilatation_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl,
     }
 
   //Step 1.3: Sortie de boucle
-
-  for(int i=0;i<nrh;i++) {
+  #pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructa,resToStore)
+  for(i=0;i<nrh;i++) {
     elemStructa = _mm_load_si128(&M[i][nch-2]);
     elemStructb = _mm_load_si128(&M[i][nch-1]);
 
@@ -133,6 +139,7 @@ vuint8** dilatation_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl,
 
 //Effectue une erosion SSE3x3 element vertical en O(r*c*s)
 vuint8** erosion_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, int nch) {
+  int i,j;
   vuint8** output = vui8matrix(nrl, nrh, ncl, nch);
 
   vuint8 elemStructa; //Premier pixel de l'élément structurant
@@ -143,20 +150,22 @@ vuint8** erosion_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, int 
 
   //Step 1: Element structurant vertical 
   //Step 1.1: Prologue
-  for(int j=0;j<nch;j++) {
+#pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructc,temp)
+  for(j=0;j<nch;j++) {
     elemStructb = _mm_load_si128(&M[0][j]);
     elemStructc = _mm_load_si128(&M[1][j]);
 
-	  temp = _mm_and_si128(elemStructb, elemStructc);
+    temp = _mm_and_si128(elemStructb, elemStructc);
     //Sauvegarde de l'opération dans la sortie
     _mm_store_si128(&output[0][j],temp);
   }
 
 	
   //Step 1.2: Corps de boucle
-  for(int i = 1; i < nrh-1; i++)
+#pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructc,elemStructa,temp,j)
+  for(i = 1; i < nrh-1; i++)
     {
-      for(int j = 0; j < nch; j++) {
+      for(j = 0; j < nch; j++) {
       elemStructa = _mm_load_si128(&M[i-1][j]);
       elemStructb = _mm_load_si128(&M[i+0][j]);
       elemStructc = _mm_load_si128(&M[i+1][j]);
@@ -169,12 +178,12 @@ vuint8** erosion_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, int 
     }
 
   //Step 1.3: Sortie de boucle
-
-  for(int j=0;j<nch;j++) {
+#pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructc,temp)
+  for(j=0;j<nch;j++) {
     elemStructb = _mm_load_si128(&M[nrh-2][j]);
     elemStructc = _mm_load_si128(&M[nrh-1][j]);
 
-	  temp = _mm_and_si128(elemStructb, elemStructc);
+    temp = _mm_and_si128(elemStructb, elemStructc);
     //Sauvegarde de l'opération dans la sortie
     _mm_store_si128(&output[nrh-1][j],temp);
   }
@@ -184,6 +193,7 @@ vuint8** erosion_SSE3x3_elemVertical(vuint8** M, int nrl, int nrh, int ncl, int 
 
 //Effectue une erosion SSE3x3 element horizontal en O(r*c*s)
 vuint8** erosion_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl, int nch) {
+  int i,j;
   vuint8** output = vui8matrix(nrl, nrh, ncl, nch);
 
 
@@ -196,7 +206,8 @@ vuint8** erosion_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl, in
   vuint8 resToStore;
   //Step 1: Element structurant vertical 
   //Step 1.1: Prologue
-  for(int i=0;i<nrh;i++) {
+#pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructc,resToStore)
+  for(i=0;i<nrh;i++) {
 		
     elemStructb = _mm_load_si128(&M[i][0]);
     elemStructc = _mm_load_si128(&M[i][1]);
@@ -205,16 +216,17 @@ vuint8** erosion_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl, in
 	
     resToStore = shift_left_add_next_si128(elemStructb,elemStructc,1);
     resToStore = _mm_and_si128(_mm_slli_si128(elemStructb,1),resToStore);
-	  resToStore = _mm_and_si128(resToStore,elemStructb);
+    resToStore = _mm_and_si128(resToStore,elemStructb);
     //Sauvegarde de l'opération dans la sortie
     _mm_store_si128(&output[i][0],resToStore);
   }
 
 	
   //Step 1.2: Corps de boucle
-  for(int i = 0; i < nrh; i++)
+#pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructc,elemStructa,temp,resToStore,j)
+  for(i = 0; i < nrh; i++)
     {
-      for(int j = 1; j < (nch-1); j++) {
+      for(j = 1; j < (nch-1); j++) {
 
         elemStructa = _mm_load_si128(&M[i][j-1]);
         elemStructb = _mm_load_si128(&M[i][j+0]);
@@ -235,8 +247,8 @@ vuint8** erosion_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl, in
     }
 
   //Step 1.3: Sortie de boucle
-
-  for(int i=0;i<nrh;i++) {
+#pragma omp parallel for schedule(dynamic, CHUNK) private(elemStructb,elemStructa,resToStore)
+  for(i=0;i<nrh;i++) {
     elemStructa = _mm_load_si128(&M[i][nch-2]);
     elemStructb = _mm_load_si128(&M[i][nch-1]);
 	
@@ -247,7 +259,7 @@ vuint8** erosion_SSE3x3_elemHorizontal(vuint8** M, int nrl, int nrh, int ncl, in
 
     resToStore = shift_right_add_prec_si128(elemStructb,elemStructa,1);
     resToStore = _mm_and_si128(_mm_srli_si128(elemStructb,1),resToStore);
-	  resToStore = _mm_and_si128(resToStore,elemStructb);
+    resToStore = _mm_and_si128(resToStore,elemStructb);
 	
 		
 

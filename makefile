@@ -23,7 +23,7 @@ mouvement_OMP.o:
 	gcc -c ./src/mouvement_OMP.c -o ./obj/mouvement_OMP.o $(OMP)
 
 mouvement_OMPxSSE2.o:
-	gcc -c ./src/mouvement_OMP.c -o ./obj/mouvement_OMP.o $(OMP)
+	gcc -c ./src/mouvement_OMPxSSE2.c -o ./obj/mouvement_OMPxSSE2.o $(OMP)
 
 nrutil.o:
 	gcc -c ./src/nrutil.c -o ./obj/nrutil.o
