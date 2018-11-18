@@ -35,9 +35,9 @@ void** frameDifference(vuint8** I0, vuint8** I1, vuint8**O, vuint8**E, long nrl,
         
         _mm_store_si128(&O[i][j], tempO);
         //Theta < O
-        c = _mm_cmplt_epu8(theta,tempO);
+        c = _mm_cmplt_epu8(tempO,theta);
 
-        d = sel_si128(c,high,low);
+        d = sel_si128(c,low,high);
 
         _mm_store_si128(&E[i][j],d);
 

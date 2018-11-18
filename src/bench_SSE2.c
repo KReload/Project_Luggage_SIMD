@@ -101,8 +101,6 @@ clock_t startFD, endFD, startTot, endTot, startMorpho, endMorpho;
   // free_ui8matrix(E1, nrl+2, nrh+2, ncl+2, nch+2);
   free_vui8matrix(I0, nrl, nrh, ncl, nch);
   free_vui8matrix(I1, nrl, nrh, ncl, nch);
-  free_vui8matrix(O, nrl, nrh, ncl, nch);
-  free_vui8matrix(E, nrl, nrh, ncl, nch);
 
 }
 void benchDetectionMouvementSDSSE2()

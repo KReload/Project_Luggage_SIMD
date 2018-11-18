@@ -30,14 +30,14 @@ void** frameDifference(vuint8** I0, vuint8** I1, vuint8**O, vuint8**E, long nrl,
       {
         INow = _mm_load_si128(&I1[i][j]);
         IPrec = _mm_load_si128(&I0[i][j]);
-        //|I0 - I1|
+        //|I1 - I0|
         tempO = sub_abs_epi8(INow,IPrec);
         
         _mm_store_si128(&O[i][j], tempO);
-        //Theta < O
-        c = _mm_cmplt_epu8(theta,tempO);
+        //O > theta
+        c = _mm_cmplt_epu8(tempO,theta);
 
-        d = sel_si128(c,high,low);
+        d = sel_si128(c,low,high);
 
         _mm_store_si128(&E[i][j],d);
 
