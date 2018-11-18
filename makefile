@@ -1,7 +1,7 @@
 
 
 #Makefile
-EXEC = ./test/testsd ./test/test_morpho ./test/test_mouvement ./test/test_mouvement_SSE2 ./test/test_morpho_SSE2 ./test/test_macros_SSE2 ./benchmark/bench ./benchmark/bench_SSE2 ./exe/*
+EXEC = ./test/testsd ./test/test_morpho ./test/test_mouvement ./test/test_mouvement_SSE2 ./test/test_morpho_SSE2 ./test/test_macros_SSE2 ./test/test_IVT ./exe/*
 HDIR = ./output/hallSSE/FDE/* ./output/hallSSE/FDO/* ./output/hallSSE/SDE/* ./output/hallSSE/SDO/* ./output/hallScalar/FDE/* ./output/hallScalar/FDO/* ./output/hallScalar/SDE/* ./output/hallScalar/SDO/* ./output/hallOMP/FDO/* ./output/hallOMP/FDE/* ./output/hallOMP/SDO/* ./output/hallOMP/SDE/* ./output/hallOMPxSSE2/FDO/* ./output/hallOMPxSSE2/FDE/* ./output/hallOMPxSSE2/SDO/* ./output/hallOMPxSSE2/SDE/*
 OBJ = ./obj/*.o
 OTHER = ./test/*.c~ ./test/*.pgm ./include/*.c~ ./include/*.h~ *.c~ ./src/*.c~
